@@ -16,3 +16,4 @@ group :development, :test do
 end
 
 gem 'haml'
+gem 'rack-cors', :require => 'rack/cors'
