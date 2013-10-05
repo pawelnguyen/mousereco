@@ -1,5 +1,9 @@
 MouseRecorder::Application.routes.draw do
-  mount BaseAPI => '/api'
+  namespace :api do
+    namespace :v1 do
+      post :events, to: 'events#create'
+    end
+  end
 
   root 'home#index'
 end
