@@ -1,5 +1,10 @@
 %h1 Visitors
 
-%ul
 - @visitors.each do |visitor|
-  %li= visitor.visitor_key
+  visitor key:
+  = visitor.key
+  %br
+  pageviews:
+  %ul
+    - visitor.pageviews.each do |pageview|
+      %li= "url: #{pageview.url}, key: #{pageview.key}"
