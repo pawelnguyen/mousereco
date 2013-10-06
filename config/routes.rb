@@ -6,6 +6,5 @@ MouseRecorder::Application.routes.draw do
   end
 
   match '*all' => 'application#options', via: [:options]
-
   root 'home#index'
 end
