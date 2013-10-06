@@ -16,5 +16,7 @@ describe 'POST /api/v1/events' do
   it 'saves events' do
     subject
     Event.count.should eq 2
+    Visitor.count.should eq 1
+    Visitor.last.events.count.should eq 2
   end
 end

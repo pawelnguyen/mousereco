@@ -1,6 +1,6 @@
 class Api::V1::EventsController < Api::V1::ApplicationController
   def create
-    EventsService.create_collection(permitted_params[:events].values)
+    EventsService.create_collection(permitted_params[:events].values, permitted_params[:visitor_key])
     render json: {success: true}
   end
 

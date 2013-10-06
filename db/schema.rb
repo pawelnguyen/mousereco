@@ -11,12 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131005132426) do
+ActiveRecord::Schema.define(version: 20131005154347) do
 
   create_table "events", force: true do |t|
     t.float    "x"
     t.float    "y"
     t.integer  "timestamp"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "visitor_id"
+  end
+
+  create_table "visitors", force: true do |t|
+    t.string   "visitor_key"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
