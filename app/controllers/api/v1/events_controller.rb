@@ -1,6 +1,4 @@
-class Api::V1::EventsController < ApplicationController
-  skip_before_filter :verify_authenticity_token
-
+class Api::V1::EventsController < Api::V1::ApplicationController
   def create
     EventsService.create_collection(permitted_params[:events].values)
     render json: {success: true}
