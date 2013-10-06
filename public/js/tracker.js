@@ -87,6 +87,7 @@
                 data = {
                     url: 'http://test.com',
                     user_key: '4k5n245j625k23nrg',
+                    pageview_key: 'kn45jkntk4534tn34k3t', //generate one pageview_key per pageview (based on timestamp and visitor_key?)
                     visitor_key: '49tuhiarf9q834tn34k3t',
                     events: [
                         {
