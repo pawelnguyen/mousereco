@@ -5,7 +5,7 @@ MouseRecorder::Application.routes.draw do
     end
   end
 
-  post '*all' => 'application#options', :constraints => {:method => 'OPTIONS'}
+  match '*all' => 'application#options', via: [:options]
 
   root 'home#index'
 end
