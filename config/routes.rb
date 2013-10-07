@@ -7,7 +7,7 @@ MouseRecorder::Application.routes.draw do
   end
 
   resources :visitors, only: [:index]
-
+  resources :pageviews, only: [:show]
   resources :trackers, only: [:show]
 
   root 'visitors#index'

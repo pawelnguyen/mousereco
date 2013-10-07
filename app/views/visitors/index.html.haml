@@ -7,4 +7,6 @@
   pageviews:
   %ul
     - visitor.pageviews.each do |pageview|
-      %li= "url: #{pageview.url}, key: #{pageview.key}"
+      %li
+        = link_to pageview_path(pageview) do
+          url: #{pageview.url}, key: #{pageview.key}

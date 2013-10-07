@@ -1,0 +1,5 @@
+%h1 Pageview
+url: #{@pageview.url}
+key: #{@pageview.key}
+
+#events{ data: {url: @pageview.url, key: @pageview.key, events: @pageview.events.to_json} }
