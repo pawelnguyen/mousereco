@@ -26,5 +26,4 @@ group :production do
 end
 
 gem 'haml'
-gem 'rack-cors', :require => 'rack/cors'
 gem 'inherited_resources'
