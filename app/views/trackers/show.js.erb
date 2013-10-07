@@ -7,10 +7,10 @@
     (function(namespace){
 
         var instance,
-        Tracker = function() {
-            this.pusher = new MouseRecorder.Pusher();
-            MouseRecorder.Util.addEventListener(document, 'click', this.pusher.receive, this.pusher);
-        };
+                Tracker = function() {
+                    this.pusher = new MouseRecorder.Pusher();
+                    MouseRecorder.Util.addEventListener(document, 'click', this.pusher.receive, this.pusher);
+                };
         Tracker.prototype = {};
 
         namespace.Tracker = {
@@ -30,17 +30,17 @@
     (function(namespace) {
 
         var url = 'http://mouse-recorder.herokuapp.com/api/v1/events',
-            cookie = 'MouseRecorder_visitorKey',
-        Pusher = function(){
-            this.url = MouseRecorder.Util.getUrl();
-            this.visitorKey = this.getVisitorKey();
-            this.pageviewKey = MouseRecorder.Util.getUID();
-        };
+                cookie = 'MouseRecorder_visitorKey',
+                Pusher = function(){
+                    this.url = MouseRecorder.Util.getUrl();
+                    this.visitorKey = this.getVisitorKey();
+                    this.pageviewKey = MouseRecorder.Util.getUID();
+                };
         Pusher.prototype = {
             receive: function(event) {
                 this.push({
                     url: this.url,
-                    user_key: '4k5n245j625k23nrg',
+                    user_key: '<%= params[:id] %>',
                     visitor_key: this.visitorKey,
                     pageview_key: this.pageviewKey,
                     events: [
@@ -142,9 +142,9 @@
         var monster = {
             set: function(name, value, seconds, path) {
                 var date = new Date(),
-                    expires = '',
-                    type = typeof(value),
-                    valueToUse = '';
+                        expires = '',
+                        type = typeof(value),
+                        valueToUse = '';
                 path = path || "/";
                 if (seconds) {
                     date.setTime(date.getTime() + seconds * 1000);
@@ -161,10 +161,10 @@
             },
             get: function(name) {
                 var nameEQ = name + "=",
-                    ca = document.cookie.split(';'),
-                    value = '',
-                    firstChar = '',
-                    parsed={};
+                        ca = document.cookie.split(';'),
+                        value = '',
+                        firstChar = '',
+                        parsed={};
                 for (var i = 0; i < ca.length; i++) {
                     var c = ca[i];
                     while (c.charAt(0) == ' ') c = c.substring(1, c.length);
