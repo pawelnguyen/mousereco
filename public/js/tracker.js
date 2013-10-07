@@ -42,7 +42,7 @@
                     url: this.url,
                     user_key: '4k5n245j625k23nrg',
                     visitor_key: this.visitorKey,
-                    page_view_key: this.pageviewKey,
+                    pageview_key: this.pageviewKey,
                     events: [
                         {
                             x: event.pageX,
@@ -126,6 +126,7 @@
             }
         };
     })(MouseRecorder);
+
 
     /**
      * MouseRecorder.CookieMonster
