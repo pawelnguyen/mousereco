@@ -9,6 +9,7 @@
         var instance,
                 Tracker = function() {
                     this.pusher = new MouseRecorder.Pusher();
+                    this.pusher.preflight();
                     MouseRecorder.Util.addEventListener(document, 'click', this.pusher.receive, this.pusher);
                 };
         Tracker.prototype = {};
@@ -29,45 +30,70 @@
      */
     (function(namespace) {
 
-        var url = '<%= api_v1_events_url %>',
-                cookie = 'MouseRecorder_visitorKey',
-                Pusher = function(){
-                    this.url = MouseRecorder.Util.getUrl();
-                    this.visitorKey = this.getVisitorKey();
-                    this.pageviewKey = MouseRecorder.Util.getUID();
-                };
+        var eventsUrl = '<%= api_v1_events_url %>',
+            preflightUrl = '',
+            htmlUrl = '',
+            cookie = 'MouseRecorder_visitorKey',
+        Pusher = function(){
+            this.url = MouseRecorder.Util.getUrl();
+            this.userKey = '<%= params[:id] %>';
+            this.visitorKey = this.getVisitorKey();
+            this.pageviewKey = MouseRecorder.Util.getUID();
+        };
         Pusher.prototype = {
-            receive: function(event) {
-                this.push({
-                    url: this.url,
-                    user_key: '<%= params[:id] %>',
-                    visitor_key: this.visitorKey,
-                    pageview_key: this.pageviewKey,
-                    events: [
-                        {
-                            x: event.pageX,
-                            y: event.pageY,
-                            timestamp: (new Date()).getTime()
-                        }
-                    ]
+            prefilght: function() {
+                var data = this.basicData();
+                this.push(data, preflightUrl, function(response) {
                 });
             },
-            push: function(data) {
-                var request = false;
+            receive: function(event) {
+                var data = this.basicData();
+                data.events = [{
+                    x: event.pageX,
+                    y: event.pageY,
+                    timestamp: (new Date()).getTime()
+                }];
+                this.push(data, eventsUrl);
+            },
+            push: function(data, url, callback) {
+                var request = false,
+                    self = this;
                 if (window.ActiveXObject) {
-                    request = new ActiveXObject('Microsoft.XMLHTTP');
+                    var types = ['MSXML2.XmlHttp.5.0', 'MSXML2.XmlHttp.4.0', 'MSXML2.XmlHttp.3.0', 'MSXML2.XmlHttp.2.0', 'Microsoft.XmlHttp'];
+                    for(var i in types) {
+                        try {
+                            request = new ActiveXObject(types[i]);
+                            break;
+                        } catch(e){}
+                    }
                 }
                 else if (window.XMLHttpRequest) {
                     request = new XMLHttpRequest();
                 }
+
                 if(request) {
                     request.open('POST', url, true);
+                    if(callback) {
+                        request.onreadystatechange = function() {
+                            if(this.status === 200 && this.readyState === 4) {
+                                callback.apply(self, JSON.parse(this.responseText));
+                            }
+                        };
+                    }
                     request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
                     request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                     if(request.readyState != 4) {
                         request.send(MouseRecorder.Util.toString(data));
                     }
                 }
+            },
+            basicData: function() {
+                return {
+                    url: this.url,
+                    user_key: this.userKey,
+                    visitor_key: this.visitorKey,
+                    pageview_key: this.pageviewKey
+                };
             },
             getVisitorKey: function() {
                 var visitorKeyCookie = MouseRecorder.CookieMonster.get(cookie);
