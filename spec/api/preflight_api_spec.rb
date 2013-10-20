@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe 'POST /api/v1/pages/preflight' do
-  subject { post "/api/v1/pages/preflight", data; response }
+describe 'POST /api/v1/pageviews/preflight' do
+  subject { post "/api/v1/pageviews/preflight", data; response }
   let(:data) {
     {"url" => "http://test.com",
      "user_key" => "4k5n245j625k23nrg",
@@ -16,5 +16,6 @@ describe 'POST /api/v1/pages/preflight' do
   it 'returns success' do
     json_response = JSON.parse(subject.body)
     json_response.keys.should include('success')
+    json_response.keys.should include('send_html')
   end
 end
