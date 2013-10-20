@@ -27,3 +27,4 @@ end
 
 gem 'haml'
 gem 'inherited_resources'
+gem 'unicorn-rails'
