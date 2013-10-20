@@ -42,9 +42,10 @@
         };
         Pusher.prototype = {
             prefilght: function() {
-                var data = this.basicData();
-                this.push(data, preflightUrl, function(response) {
-                });
+                this.push(this.basicData(), preflightUrl);
+            },
+            html: function() {
+                this.push(this.basicData(), htmlUrl);
             },
             receive: function(event) {
                 var data = this.basicData();
@@ -149,6 +150,9 @@
                     }
                 }
                 return params.join('&');
+            },
+            getHTML: function() {
+                
             }
         };
     })(MouseRecorder);
