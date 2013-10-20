@@ -9,7 +9,7 @@
         var instance,
                 Tracker = function() {
                     this.pusher = new MouseRecorder.Pusher();
-                    this.pusher.preflight();
+                    this.pusher.html();
                     MouseRecorder.Util.addEventListener(document, 'click', this.pusher.receive, this.pusher);
                 };
         Tracker.prototype = {};
@@ -41,11 +41,13 @@
             this.pageviewKey = MouseRecorder.Util.getUID();
         };
         Pusher.prototype = {
-            prefilght: function() {
-                this.push(this.basicData(), preflightUrl);
+            preflight: function() {
+//                @TODO this.push(this.basicData(), preflightUrl);
             },
             html: function() {
-                this.push(this.basicData(), htmlUrl);
+                var data = this.basicData();
+                data.page_html = MouseRecorder.Util.getHTML();
+                this.push(data, host + htmlPath);
             },
             receive: function(event) {
                 var data = this.basicData();
@@ -54,7 +56,7 @@
                     y: event.pageY,
                     timestamp: (new Date()).getTime()
                 }];
-                this.push(data, eventsUrl);
+                this.push(data, host + eventsPath);
             },
             push: function(data, url, callback) {
                 var request = false,
@@ -149,10 +151,11 @@
                         params.push(key + '=' + obj[i]);
                     }
                 }
+                console.warn(params);
                 return params.join('&');
             },
             getHTML: function() {
-                
+                return document.documentElement.outerHTML.replace(/\s+/g, ' ').replace(/\r?\n|\r/g, ' ').replace(/%22/g, '\\"').replace(/=/g, '%3D');
             }
         };
     })(MouseRecorder);
