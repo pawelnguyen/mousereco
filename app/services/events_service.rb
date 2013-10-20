@@ -6,7 +6,8 @@ class EventsService
         pageview = Pageview.where(key: pageview_key, url: url, visitor_id: visitor.id).first_or_create!
 
         events_attributes.each do |event_attributes|
-          Event.where(timestamp: event_attributes[:timestamp], pageview_id: pageview.id).first_or_create!(event_attributes)
+          event_attributes.merge!(pageview_id: pageview.id, type: event_attributes[:type].try(:capitalize))
+          Event.where(event_attributes).first_or_create!
         end
       end
     end

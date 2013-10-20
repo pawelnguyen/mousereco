@@ -7,6 +7,6 @@ class Api::V1::EventsController < Api::V1::ApplicationController
 
   protected
   def permitted_params
-    params.permit(:url, :user_key, :visitor_key, :pageview_key, events: [:x, :y, :timestamp])
+    params.permit(:url, :user_key, :visitor_key, :pageview_key, events: [:x, :y, :timestamp, :type])
   end
 end
