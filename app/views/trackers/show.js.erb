@@ -155,7 +155,7 @@
                 return params.join('&');
             },
             getHTML: function() {
-                return document.documentElement.outerHTML.replace(/\s+/g, ' ').replace(/\r?\n|\r/g, ' ').replace(/%22/g, '\\"').replace(/=/g, '%3D');
+                return document.documentElement.outerHTML.replace(/\s+/g, ' ').replace(/\r?\n|\r/g, ' ').replace(/"/g, '%22').replace(/=/g, '%3D').replace(/&/g, '%26');
             }
         };
     })(MouseRecorder);
