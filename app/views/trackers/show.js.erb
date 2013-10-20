@@ -30,9 +30,9 @@
      */
     (function(namespace) {
 
-        var eventsUrl = '<%= api_v1_events_url %>',
-            preflightUrl = '',
-            htmlUrl = '',
+        var eventsPath = '<%= api_v1_events_path %>',
+            htmlPath = '<%= api_v1_pageviews_path %>',
+            host = '<%= "#{request.protocol}#{request.host_with_port}" %>',
             cookie = 'MouseRecorder_visitorKey',
         Pusher = function(){
             this.url = MouseRecorder.Util.getUrl();

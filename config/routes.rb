@@ -2,7 +2,7 @@ MouseRecorder::Application.routes.draw do
   namespace :api do
     namespace :v1 do
       post :events, to: 'events#create'
-      resources :pageviews do
+      resources :pageviews, only: [:create] do
         collection do
           post :preflight, to: 'pageviews#preflight'
         end
