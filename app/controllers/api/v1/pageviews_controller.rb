@@ -4,7 +4,6 @@ class Api::V1::PageviewsController < Api::V1::ApplicationController
   end
 
   def create
-    binding.pry
     PageviewsService.create!(permitted_params)
     render json: {success: true}
   end
