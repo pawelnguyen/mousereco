@@ -12,7 +12,11 @@ MouseRecorder::Application.routes.draw do
   end
 
   resources :visitors, only: [:index]
-  resources :pageviews, only: [:show]
+  resources :pageviews, only: [:show] do
+    member do
+      get :page_html
+    end
+  end
   resources :trackers, only: [:show]
 
   root 'visitors#index'
