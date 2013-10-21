@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131020120223) do
+ActiveRecord::Schema.define(version: 20131021220348) do
 
   create_table "events", force: true do |t|
     t.float    "x"
@@ -30,6 +30,8 @@ ActiveRecord::Schema.define(version: 20131020120223) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "page_html"
+    t.integer  "window_width",  default: 0
+    t.integer  "window_height", default: 0
   end
 
   create_table "visitors", force: true do |t|
