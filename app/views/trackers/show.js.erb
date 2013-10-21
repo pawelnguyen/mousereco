@@ -7,12 +7,32 @@
     (function(namespace){
 
         var instance,
-                Tracker = function() {
-                    this.pusher = new MouseRecorder.Pusher();
-                    this.pusher.html();
-                    MouseRecorder.Util.addEventListener(document, 'click', this.pusher.receive, this.pusher);
-                };
-        Tracker.prototype = {};
+            mousePositionTrackInterval = 250,
+        Tracker = function() {
+            this.pusher = new MouseRecorder.Pusher();
+            this.pusher.html();
+            MouseRecorder.Util.addEventListener(document, 'click', this.pusher.receive, this.pusher);
+            MouseRecorder.Util.addEventListener(document, 'mousemove', function(event) {
+                this.coords.pageX = event.pageX;
+                this.coords.pageY = event.pageY;
+                this.mouseMoved = true;
+            }, this);
+
+            this.mouseMoved = false;
+            this.coords = {};
+            this.trackMousePosition();
+        };
+        Tracker.prototype = {
+            trackMousePosition: function() {
+                var self = this;
+                setInterval(function() {
+                    if(self.mouseMoved) {
+                        self.mouseMoved = false;
+                        self.pusher.receive(self.coords, 'mousemove');
+                    }
+                }, mousePositionTrackInterval);
+            }
+        };
 
         namespace.Tracker = {
             instance: function() {
@@ -34,11 +54,14 @@
             htmlPath = '<%= api_v1_pageviews_path %>',
             host = '<%= "#{request.protocol}#{request.host_with_port}" %>',
             cookie = 'MouseRecorder_visitorKey',
+            timeout = 5000,
         Pusher = function(){
             this.url = MouseRecorder.Util.getUrl();
             this.userKey = '<%= params[:id] %>';
             this.visitorKey = this.getVisitorKey();
             this.pageviewKey = MouseRecorder.Util.getUID();
+            this.events = [];
+            this.timer = [];
         };
         Pusher.prototype = {
             preflight: function() {
@@ -49,12 +72,18 @@
                 data.page_html = MouseRecorder.Util.getHTML();
                 this.push(data, host + htmlPath);
             },
-            receive: function(event) {
-                var data = this.basicData();
+            receive: function(event, type) {
+//                if(this.timer) {
+//                    clearTimeout(timer);
+//                }
+//                timer
+                var data = this.basicData(),
+                    type = type || 'click';
                 data.events = [{
                     x: event.pageX,
                     y: event.pageY,
-                    timestamp: (new Date()).getTime()
+                    timestamp: (new Date()).getTime(),
+                    type: type
                 }];
                 this.push(data, host + eventsPath);
             },
