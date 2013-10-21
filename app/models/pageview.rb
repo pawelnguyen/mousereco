@@ -4,6 +4,6 @@ class Pageview < ActiveRecord::Base
   has_many :mousemoves, -> { order('timestamp ASC') }
 
   def events_json
-    events.to_json(only: [:x, :y, :timestamp])
+    events.to_json(only: [:x, :y, :timestamp, :type])
   end
 end
