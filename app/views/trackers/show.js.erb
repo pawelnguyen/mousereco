@@ -1,18 +1,50 @@
 (function(){
     var MouseRecorder = {};
 
+
+    /**
+     * MouseRecorder.Events
+     */
+    MouseRecorder.Events = {
+        CLICK: 'click',
+        MOVE: 'mousemove'
+    },
+
+
     /**
      * MouseRecorder.Tracker
      */
     (function(namespace){
 
         var instance,
-                Tracker = function() {
-                    this.pusher = new MouseRecorder.Pusher();
-                    this.pusher.html();
-                    MouseRecorder.Util.addEventListener(document, 'click', this.pusher.receive, this.pusher);
-                };
-        Tracker.prototype = {};
+            mousePositionTrackInterval = 250,
+        Tracker = function() {
+            this.pusher = new MouseRecorder.Pusher();
+            this.pusher.html();
+
+            this.mouseCoords = {};
+            this.initListeners();
+            this.trackMousePosition();
+        };
+        Tracker.prototype = {
+            initListeners: function() {
+                MouseRecorder.Util.addEventListener(document, MouseRecorder.Events.CLICK, this.pusher.receive, this.pusher);
+                MouseRecorder.Util.addEventListener(document, MouseRecorder.Events.MOVE, function(event) {
+                    this.mouseCoords.pageX = event.pageX;
+                    this.mouseCoords.pageY = event.pageY;
+                    this.mouseCoords.moved = true;
+                }, this);
+            },
+            trackMousePosition: function() {
+                var self = this;
+                setInterval(function() {
+                    if(self.mouseCoords.moved === true) {
+                        self.mouseCoords.moved = false;
+                        self.pusher.receive(self.mouseCoords, MouseRecorder.Events.MOVE);
+                    }
+                }, mousePositionTrackInterval);
+            }
+        };
 
         namespace.Tracker = {
             instance: function() {
@@ -34,11 +66,14 @@
             htmlPath = '<%= api_v1_pageviews_path %>',
             host = '<%= "#{request.protocol}#{request.host_with_port}" %>',
             cookie = 'MouseRecorder_visitorKey',
+            pushTimeout = 5000,
         Pusher = function(){
             this.url = MouseRecorder.Util.getUrl();
             this.userKey = '<%= params[:id] %>';
             this.visitorKey = this.getVisitorKey();
             this.pageviewKey = MouseRecorder.Util.getUID();
+            this.events = [];
+            this.pushTimer = undefined;
         };
         Pusher.prototype = {
             preflight: function() {
@@ -49,13 +84,34 @@
                 data.page_html = MouseRecorder.Util.getHTML();
                 this.push(data, host + htmlPath);
             },
-            receive: function(event) {
-                var data = this.basicData();
-                data.events = [{
+            receive: function(event, type) {
+                var type = type || MouseRecorder.Events.CLICK,
+                    push = (type == MouseRecorder.Events.CLICK);
+                this.events.push({
                     x: event.pageX,
                     y: event.pageY,
-                    timestamp: (new Date()).getTime()
-                }];
+                    timestamp: (new Date()).getTime(),
+                    type: type
+                });
+                if(push) {
+                    clearTimeout(this.pushTimer);
+                    this.prePush();
+                }
+                else {
+                    var self = this;
+                    if(!this.pushTimer) {
+                        this.pushTimer = setTimeout(function() {
+                            clearTimeout(self.pushTimer);
+                            self.pushTimer = undefined;
+                            self.prePush();
+                        }, pushTimeout);
+                    }
+                }
+            },
+            prePush: function() {
+                var data = this.basicData();
+                data.events = this.events;
+                this.events = [];
                 this.push(data, host + eventsPath);
             },
             push: function(data, url, callback) {
@@ -151,7 +207,6 @@
                         params.push(key + '=' + obj[i]);
                     }
                 }
-                console.warn(params);
                 return params.join('&');
             },
             getHTML: function() {
