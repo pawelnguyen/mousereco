@@ -157,7 +157,7 @@
             getHTML: function() {
                 var html = document.documentElement.outerHTML.replace(/\s+/g, ' ').replace(/\r?\n|\r/g, ' ').replace(
                     /<head>(.*)<\/head>/, '<base href="http://' + document.domain + '/">' + document.getElementsByTagName('head')[0].innerHTML);
-                return html.replace(/\s+/g, ' ').replace(/\r?\n|\r/g, ' ').replace(/"/g, '%22').replace(/=/g, '%3D').replace(/&/g, '%26').replace(/;/g, '%3B');
+                return encodeURIComponent(html.replace(/\s+/g, ' ').replace(/\r?\n|\r/g, ' '))
             }
         };
     })(MouseRecorder);
