@@ -4,8 +4,9 @@
                 var createIframe = function(url) {
                     return $('body').append('<iframe src="' + url + '" width="100%" height="600"></iframe>').find('iframe');
                 },
-                createPoint = function(x, y, i, $el) {
-                    $el.append('<div style="position:absolute;top:'+y+'px;left:'+x+'px;">'+i+'</div>');
+                createPoint = function(x, y, type, i, $el) {
+                    var color = type == 'click' ? 'blue' : 'pink';
+                    $el.append('<div style="position:absolute;top:'+y+'px;left:'+x+'px;color:'+color+'">'+i+'</div>');
                 }
 
                 var $iframe = createIframe($('#events').attr('data-url')),
@@ -16,7 +17,7 @@
                 $('iframe').on('load', function() {
                     var $iframeBody = $('iframe').contents().find('body')
                     $.each(data, function(i, o) {
-                        createPoint(o.x, o.y, i, $iframeBody);
+                        createPoint(o.x, o.y, o.type.toLowerCase(), i, $iframeBody);
                     });
                 });
 //                setTimeout(function(){
