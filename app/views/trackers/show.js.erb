@@ -156,8 +156,11 @@
             },
             getHTML: function() {
                 var html = document.documentElement.outerHTML.replace(/\s+/g, ' ').replace(/\r?\n|\r/g, ' ').replace(
-                    /<head>(.*)<\/head>/, '<base href="http://' + document.domain + '/">' + document.getElementsByTagName('head')[0].innerHTML);
+                    /<head>(.*)<\/head>/, '<base href="' + this.getUrlRoot() + '">' + document.getElementsByTagName('head')[0].innerHTML);
                 return encodeURIComponent(html.replace(/\s+/g, ' ').replace(/\r?\n|\r/g, ' '))
+            },
+            getUrlRoot: function() {
+              return this.getUrl().match(/(.*\/)/)[0];
             }
         };
     })(MouseRecorder);
