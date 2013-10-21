@@ -1,0 +1,2 @@
+class Mousemove < Event
+end

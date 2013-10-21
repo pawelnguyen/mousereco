@@ -1,0 +1,2 @@
+class Click < Event
+end

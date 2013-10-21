@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131020092424) do
+ActiveRecord::Schema.define(version: 20131020120223) do
 
   create_table "events", force: true do |t|
     t.float    "x"
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 20131020092424) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "pageview_id"
+    t.string   "type"
   end
 
   create_table "pageviews", force: true do |t|
