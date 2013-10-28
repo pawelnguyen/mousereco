@@ -6,7 +6,7 @@
     = stylesheet_link_tag "application"
     = javascript_include_tag "application"
     = csrf_meta_tag
-  %body
+  %body{class: controller_name}
     .navbar.navbar-inverse.navbar-fixed-top
       .container
         .navbar-header
