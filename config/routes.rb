@@ -11,13 +11,17 @@ MouseRecorder::Application.routes.draw do
     end
   end
 
+  devise_for :users
+
   resources :visitors, only: [:index]
+
   resources :pageviews, only: [:show] do
     member do
       get :page_html
     end
   end
+
   resources :trackers, only: [:show]
 
-  root 'visitors#index'
+  root 'home#index'
 end
