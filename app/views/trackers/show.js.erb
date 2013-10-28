@@ -7,7 +7,8 @@
      */
     MouseRecorder.Events = {
         CLICK: 'click',
-        MOVE: 'mousemove'
+        MOVE: 'mousemove',
+        SCROLL: 'scroll'
     },
 
 
@@ -18,32 +19,44 @@
 
         var instance,
             mousePositionTrackInterval = 250,
+            mouseScrollTrackInterval = 250,
+            body = document.getElementsByTagName('body')[0],
         Tracker = function() {
             this.pusher = new MouseRecorder.Pusher();
             this.pusher.html();
 
-            this.mouseCoords = {};
+            this.coords = {};
             this.initListeners();
-            this.trackMousePosition();
         };
         Tracker.prototype = {
+            on: {},
             initListeners: function() {
+                MouseRecorder.Util.addEventListener(window, MouseRecorder.Events.SCROLL, this.withInterval(MouseRecorder.Events.SCROLL, mouseScrollTrackInterval), this);
+                MouseRecorder.Util.addEventListener(document, MouseRecorder.Events.MOVE, this.withInterval(MouseRecorder.Events.MOVE, mousePositionTrackInterval), this);
                 MouseRecorder.Util.addEventListener(document, MouseRecorder.Events.CLICK, this.pusher.receive, this.pusher);
-                MouseRecorder.Util.addEventListener(document, MouseRecorder.Events.MOVE, function(event) {
-                    this.mouseCoords.pageX = event.pageX;
-                    this.mouseCoords.pageY = event.pageY;
-                    this.mouseCoords.moved = true;
-                }, this);
             },
-            trackMousePosition: function() {
+            withInterval: function(eventType, interval) {
                 var self = this;
                 setInterval(function() {
-                    if(self.mouseCoords.moved === true) {
-                        self.mouseCoords.moved = false;
-                        self.pusher.receive(self.mouseCoords, MouseRecorder.Events.MOVE);
+                    if(self.coords[eventType] && self.coords[eventType].update === true) {
+                        self.coords[eventType].update = false;
+                        self.pusher.receive(self.coords[eventType], eventType);
                     }
-                }, mousePositionTrackInterval);
+                }, interval);
+                return function(event) {
+                    var data = self.on[eventType](event);
+                    self.coords[eventType] = self.coords[eventType] || {};
+                    self.coords[eventType].update = true;
+                    self.coords[eventType].pageX = data[0];
+                    self.coords[eventType].pageY = data[1];
+                };
             }
+        };
+        Tracker.prototype.on[MouseRecorder.Events.SCROLL] = function(event) {
+            return [body.scrollLeft, body.scrollTop];
+        };
+        Tracker.prototype.on[MouseRecorder.Events.MOVE] = function(event) {
+            return [event.pageX, event.pageY];
         };
 
         namespace.Tracker = {
@@ -97,7 +110,6 @@
                     type: type
                 });
                 if(push) {
-                    clearTimeout(this.pushTimer);
                     this.prePush();
                 }
                 else {
