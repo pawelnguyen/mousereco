@@ -1,2 +1,0 @@
-class Onscroll < Event
-end

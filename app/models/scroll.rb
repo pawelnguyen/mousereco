@@ -1,0 +1,2 @@
+class Scroll < Event
+end
