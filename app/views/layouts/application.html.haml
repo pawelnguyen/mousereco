@@ -1,0 +1,23 @@
+!!!
+%html
+  %head
+    %meta{name: "viewport", content: "width=device-width, initial-scale=1.0"}
+    %title= "Mouse recorder"
+    = stylesheet_link_tag "application"
+    = javascript_include_tag "application"
+    = csrf_meta_tag
+  %body
+    .navbar.navbar-inverse
+      .navbar-header
+        = link_to 'Mouse recorder', root_path, class: 'navbar-brand'
+      .collapse.navbar-collapse
+        %ul.nav.navbar-nav.navbar-right
+          %li
+            - unless user_signed_in?
+              = link_to 'Sign in', new_user_session_path
+            - else
+              = link_to 'Sign out', destroy_user_session_path
+    .container.main-container
+      .row-fluid
+        .span12
+          = yield
