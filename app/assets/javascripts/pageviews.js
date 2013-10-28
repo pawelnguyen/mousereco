@@ -1,12 +1,13 @@
 (function(namespace) {
 
     var EVENTS = {
+        MOVE: 'mousemove',
         SCROLL: 'scroll'
     },
     Player = function(events, $iframe){
         this.events = events;
         this.$iframe = $iframe;
-        this.$iframeBody = this.$iframe.contents().find('body');
+        this.$mouse = null;
         this.now = events[0].timestamp - 1000;//(new Date()).getTime();
         this.current = 0;
     };
@@ -26,13 +27,26 @@
         },
         showEvent: function(event) {
             event.type = event.type.toLowerCase();
-            this.$iframeBody.append('<div style="position:absolute;top:' + event.y + 'px;left:' + event.x + 'px;color:red;">' + this.current + '-' + event.type + '</div>');
             switch(event.type) {
                 case EVENTS.SCROLL:
-                    this.$iframeBody.scrollTop(event.y);
-                    this.$iframeBody.scrollLeft(event.x);
+                    this.$iframe.scrollTop(event.y);
+                    this.$iframe.scrollLeft(event.x);
+                    break;
+                case EVENTS.MOVE:
+                    this.moveMouse(event.x, event.y);
+                    break
+                default:
+                    this.moveMouse(event.x, event.y);
+                    this.$iframe.append('<div style="position:absolute;top:' + event.y + 'px;left:' + event.x + 'px;color:red;">' + this.current + '-' + event.type + '</div>');
                     break;
             }
+        },
+        moveMouse: function(x, y) {
+            if(!this.$mouse) {
+                this.$iframe.append('<div id="mouse" style="position:absolute;top:' + y + 'px;left:' + x + 'px;color:blue;font-size:50px;">Mouse</div>');
+                this.$mouse = this.$iframe.find('#mouse');
+            }
+            this.$mouse.css({top: x, left: y});
         }
     };
 
@@ -60,7 +74,7 @@
                 offsetY = $iframe.offset().top;
 
             $('iframe').on('load', function() {
-                player = new window.Player(data, $('iframe'));
+                player = new window.Player(data, $('iframe').contents().find('body'));
                 player.play();
 //                var $iframeBody = $('iframe').contents().find('body')
 //                $.each(data, function(i, o) {
