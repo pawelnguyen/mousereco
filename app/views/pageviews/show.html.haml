@@ -2,4 +2,7 @@
 url: #{@pageview.url}
 key: #{@pageview.key}
 
-#events{ data: {url: page_html_pageview_path(@pageview), key: @pageview.key, events: @pageview.events_json} }
+#events{ data: {url: page_html_pageview_path(@pageview), window_height: max_if_zero(@pageview.window_height),
+  window_width: max_if_zero(@pageview.window_width), key: @pageview.key, events: @pageview.events_json} }
+
+%iframe#pageview_window
