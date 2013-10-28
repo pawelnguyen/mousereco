@@ -1,3 +1,44 @@
+(function(namespace) {
+
+    var EVENTS = {
+        SCROLL: 'scroll'
+    },
+    Player = function(events, $iframe){
+        this.events = events;
+        this.$iframe = $iframe;
+        this.$iframeBody = this.$iframe.contents().find('body');
+        this.now = events[0].timestamp - 1000;//(new Date()).getTime();
+        this.current = 0;
+    };
+    Player.prototype = {
+        play: function() {
+            if(this.events[this.current]) {
+                var self = this,
+                    event = this.events[this.current],
+                    timeout = event.timestamp - this.now;
+                setTimeout(function() {
+                    self.current++;
+                    self.now = event.timestamp;
+                    self.showEvent(event);
+                    self.play();
+                }, timeout);
+            }
+        },
+        showEvent: function(event) {
+            event.type = event.type.toLowerCase();
+            this.$iframeBody.append('<div style="position:absolute;top:' + event.y + 'px;left:' + event.x + 'px;color:red;">' + this.current + '-' + event.type + '</div>');
+            switch(event.type) {
+                case EVENTS.SCROLL:
+                    this.$iframeBody.scrollTop(event.y);
+                    this.$iframeBody.scrollLeft(event.x);
+                    break;
+            }
+        }
+    };
+
+    namespace.Player = Player;
+})(window);
+
 (function() {
     $(document).on('ready', function() {
         if ($('body').hasClass('pageviews')) {
@@ -19,17 +60,13 @@
                 offsetY = $iframe.offset().top;
 
             $('iframe').on('load', function() {
-                var $iframeBody = $('iframe').contents().find('body')
-                $.each(data, function(i, o) {
-                    createPoint(o.x, o.y, o.type.toLowerCase(), i, $iframeBody);
-                });
-            });
-//            setTimeout(function() {
-//                var $iframeBody = $('iframe').contents().find('body');
+                player = new window.Player(data, $('iframe'));
+                player.play();
+//                var $iframeBody = $('iframe').contents().find('body')
 //                $.each(data, function(i, o) {
-//                    createPoint(o.x, o.y, i, $iframeBody);
+//                    createPoint(o.x, o.y, o.type.toLowerCase(), i, $iframeBody);
 //                });
-//            }, 2000);
+            });
         }
     });
 })();
