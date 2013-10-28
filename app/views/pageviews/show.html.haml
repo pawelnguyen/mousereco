@@ -3,6 +3,7 @@ url: #{@pageview.url}
 key: #{@pageview.key}
 
 #events{ data: {url: page_html_pageview_path(@pageview), window_height: max_if_zero(@pageview.window_height),
-  window_width: max_if_zero(@pageview.window_width), key: @pageview.key, events: @pageview.events_json} }
+  window_width: max_if_zero(@pageview.window_width), key: @pageview.key, events: @pageview.events_json,
+  visit_start_timestamp: @pageview.timestamp} }
 
 %iframe#pageview_window

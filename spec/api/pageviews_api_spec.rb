@@ -50,6 +50,7 @@ EOS
       Pageview.last.page_html.should eq data["page_html"]
       Pageview.last.window_width.should eq 1200
       Pageview.last.window_height.should eq 900
+      Pageview.last.timestamp.should eq 123456671
     end
   end
 end
