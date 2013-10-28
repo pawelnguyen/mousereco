@@ -81,6 +81,9 @@
             },
             html: function() {
                 var data = this.basicData();
+                var window_size = MouseRecorder.Util.getWindowSize();
+                data.window_height = window_size.height;
+                data.window_width = window_size.width;
                 data.page_html = MouseRecorder.Util.getHTML();
                 this.push(data, host + htmlPath);
             },
@@ -216,6 +219,9 @@
             },
             getUrlRoot: function() {
               return this.getUrl().match(/(.*\/)/)[0];
+            },
+            getWindowSize: function() {
+                return {width: window.innerWidth, height: window.innerHeight};
             }
         };
     })(MouseRecorder);
