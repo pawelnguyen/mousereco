@@ -8,7 +8,7 @@
     MouseRecorder.Events = {
         CLICK: 'click',
         MOVE: 'mousemove',
-        SCROLL: 'onscroll'
+        SCROLL: 'scroll'
     },
 
 
@@ -20,6 +20,7 @@
         var instance,
             mousePositionTrackInterval = 250,
             mouseScrollTrackInterval = 250,
+            body = document.getElementsByTagName('body')[0],
         Tracker = function() {
             this.pusher = new MouseRecorder.Pusher();
             this.pusher.html();
@@ -37,8 +38,8 @@
             withInterval: function(eventType, interval) {
                 var self = this;
                 setInterval(function() {
-                    if(self.coords[eventType].updated === true) {
-                        self.coords[eventType].updated = false;
+                    if(self.coords[eventType] && self.coords[eventType].update === true) {
+                        self.coords[eventType].update = false;
                         self.pusher.receive(self.coords[eventType], eventType);
                     }
                 }, interval);
@@ -52,11 +53,10 @@
             }
         };
         Tracker.prototype.on[MouseRecorder.Events.SCROLL] = function(event) {
-            var body = document.getElementsByTagName('body')[0];
             return [body.scrollLeft, body.scrollTop];
         };
         Tracker.prototype.on[MouseRecorder.Events.MOVE] = function(event) {
-            return(event.pageX, event.pageY);
+            return [event.pageX, event.pageY];
         };
 
         namespace.Tracker = {
