@@ -16,3 +16,7 @@
 .main-container {
     padding-top: 60px;
 }
+
+.pageviews .main-container {
+    margin-left: 0;
+}

@@ -5,48 +5,105 @@
         SCROLL: 'scroll'
     },
     Player = function(events, $iframe){
-        this.events = events;
+        this.mouseEvents = [];
+        this.otherEvents = [];
+        this.currentMouseEvent = 0;
+        this.currentOtherEvent = 0;
+        this.mouseTimestamp = events[0].timestamp - 1000;
+        this.otherTimestamp = events[0].timestamp - 1000;
+
         this.$iframe = $iframe;
         this.$mouse = null;
-        this.now = events[0].timestamp - 1000;//(new Date()).getTime();
-        this.current = 0;
+
+        this.groupEvents(events);
+        this.createMouse();
     };
     Player.prototype = {
+        groupEvents: function(events) {
+            for(var i in events) {
+                events[i].type = events[i].type.toLowerCase();
+                if(events[i].type == EVENTS.SCROLL) {
+                    this.otherEvents.push(events[i]);
+                }
+                else {
+                    this.mouseEvents.push(events[i]);
+                }
+            }
+        },
         play: function() {
-            if(this.events[this.current]) {
+            this.paused = false;
+            this.playOther();
+            this.playMouse();
+        },
+        pause: function() {
+            this.paused = true;
+        },
+        playMouse: function() {
+            if(!this.paused && this.mouseEvents[this.currentMouseEvent]) {
+                var self = this;
+                if(this.currentMouseEvent === 0) {
+                    var event = this.mouseEvents[this.currentMouseEvent],
+                        timeout = event.timestamp - this.mouseTimestamp;
+                    setTimeout(function() {
+                        if(!self.paused) {
+                            self.currentMouseEvent++;
+                            self.mouseTimestamp = event.timestamp;
+                            self.showEvent(event);
+                            self.playMouse();
+                        }
+                    }, timeout);
+                }
+                else {
+                    var currentEvent = this.mouseEvents[this.currentMouseEvent],
+                        previousEvent = this.mouseEvents[this.currentMouseEvent - 1];
+                    this.$mouse.animate({
+                        top: currentEvent.y,
+                        left: currentEvent.x
+                    }, currentEvent.timestamp - previousEvent.timestamp, function() {
+                        if(!self.paused) {
+                            self.currentMouseEvent++;
+                            self.mouseTimestamp = currentEvent.timestamp;
+                            self.showEvent(currentEvent);
+                            self.playMouse();
+                        }
+                    });
+                }
+            }
+        },
+        playOther: function() {
+            if(!this.paused && this.otherEvents[this.currentOtherEvent]) {
                 var self = this,
-                    event = this.events[this.current],
-                    timeout = event.timestamp - this.now;
+                    event = this.otherEvents[this.currentOtherEvent],
+                    timeout = event.timestamp - this.otherTimestamp;
                 setTimeout(function() {
-                    self.current++;
-                    self.now = event.timestamp;
-                    self.showEvent(event);
-                    self.play();
+                    if(!self.paused) {
+                        self.currentOtherEvent++;
+                        self.otherTimestamp = event.timestamp;
+                        self.showEvent(event);
+                        self.playOther();
+                    }
                 }, timeout);
             }
         },
         showEvent: function(event) {
-            event.type = event.type.toLowerCase();
             switch(event.type) {
                 case EVENTS.SCROLL:
                     this.$iframe.scrollTop(event.y);
                     this.$iframe.scrollLeft(event.x);
                     break;
                 case EVENTS.MOVE:
-                    this.moveMouse(event.x, event.y);
-                    break
+                    this.$iframe.append('<div style="position:absolute;top:' + event.y + 'px;left:' + event.x + 'px;color:red;">' + this.currentMouseEvent + '-' + event.type + '</div>');
+                    break;
                 default:
-                    this.moveMouse(event.x, event.y);
-                    this.$iframe.append('<div style="position:absolute;top:' + event.y + 'px;left:' + event.x + 'px;color:red;">' + this.current + '-' + event.type + '</div>');
+                    this.$iframe.append('<div style="position:absolute;top:' + event.y + 'px;left:' + event.x + 'px;color:red;">' + this.currentMouseEvent + '-' + event.type + '</div>');
                     break;
             }
         },
-        moveMouse: function(x, y) {
+        createMouse: function() {
             if(!this.$mouse) {
-                this.$iframe.append('<div id="mouse" style="position:absolute;top:' + y + 'px;left:' + x + 'px;color:blue;font-size:50px;">Mouse</div>');
+                this.$iframe.append('<div id="mouse" style="max-width:50px;min-width:10px;position:absolute;top:' + 0 + 'px;left:' + 0 + 'px;color:blue;font-size:10px;z-index:99999;background-color:black;">Mouse</div>');
                 this.$mouse = this.$iframe.find('#mouse');
             }
-            this.$mouse.css({top: x, left: y});
         }
     };
 
@@ -75,7 +132,8 @@
 
             $('iframe').on('load', function() {
                 player = new window.Player(data, $('iframe').contents().find('body'));
-                player.play();
+                window.pl = player;
+//                player.play();
 //                var $iframeBody = $('iframe').contents().find('body')
 //                $.each(data, function(i, o) {
 //                    createPoint(o.x, o.y, o.type.toLowerCase(), i, $iframeBody);
