@@ -4,17 +4,18 @@
         MOVE: 'mousemove',
         SCROLL: 'scroll'
     },
+    playDelay = 500,
     Player = function(events, $iframe){
         this.mouseEvents = [];
         this.scrollEvents = [];
         this.currentMouseEvent = 0;
         this.currentScrollEvent = 0;
 
-        this.currentMouseEventTimestamp = events[0].timestamp - 1000;
+        this.currentMouseEventTimestamp = events[0].timestamp - playDelay;
         this.mouseRealTimestamp = 0;
         this.mousePauseTimeout = 0;
 
-        this.currentScrollEventTimestamp = events[0].timestamp - 1000;
+        this.currentScrollEventTimestamp = events[0].timestamp - playDelay;
         this.scrollRealTimestamp = 0;
         this.scrollPauseTimeout = 0;
 
@@ -96,7 +97,6 @@
                 var self = this,
                     event = this.scrollEvents[this.currentScrollEvent],
                     timeout = event.timestamp - this.currentScrollEventTimestamp - this.scrollPauseTimeout;
-                console.log(event.timestamp - this.currentScrollEventTimestamp, this.scrollPauseTimeout);
                 this.scrollRealTimestamp = (new Date()).getTime();
                 this.scrollTimeout = setTimeout(function() {
                     if(!self.paused) {
@@ -110,13 +110,14 @@
             }
         },
         showEvent: function(event) {
+            console.log(event);
             switch(event.type) {
                 case EVENTS.SCROLL:
                     this.$iframe.scrollTop(event.y);
                     this.$iframe.scrollLeft(event.x);
                     break;
                 default:
-                    this.$iframe.append('<div style="position:absolute;top:' + event.y + 'px;left:' + event.x + 'px;color:red;">' + this.currentMouseEvent + '-' + event.type + '</div>');
+                    this.$iframe.append('<div style="position:absolute;top:' + event.y + 'px;left:' + event.x + 'px;color:red;z-index:99998;">' + this.currentMouseEvent + '-' + event.type + '</div>');
                     break;
             }
         }
