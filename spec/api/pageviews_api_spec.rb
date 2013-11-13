@@ -5,7 +5,7 @@ describe Api::V1::PageviewsController do
     subject { post "/api/v1/pageviews/preflight", data; response }
     let(:data) {
       {"url" => "http://test.com",
-       "user_key" => "4k5n245j625k23nrg",
+       "website_key" => "4k5n245j625k23nrg",
        "pageview_key" => "3kjn234jk23n4tk4her",
        "visitor_key" => "49tuhiarf9q834tn34k3t",
        "timestamp" => "123456671"
@@ -25,7 +25,7 @@ describe Api::V1::PageviewsController do
     subject { post "/api/v1/pageviews", data; response }
     let(:data) {
       {"url" => "http://test.com",
-       "user_key" => "4k5n245j625k23nrg",
+       "website_key" => "4k5n245j625k23nrg",
        "pageview_key" => "3kjn234jk23n4tk4her",
        "visitor_key" => "49tuhiarf9q834tn34k3t",
        "window_width" => "1200",

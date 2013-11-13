@@ -21,6 +21,8 @@ MouseRecorder::Application.routes.draw do
     end
   end
 
+  resources :websites
+
   resources :trackers, only: [:show]
 
   root 'home#index'

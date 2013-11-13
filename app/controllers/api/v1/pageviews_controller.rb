@@ -10,6 +10,6 @@ class Api::V1::PageviewsController < Api::V1::ApplicationController
 
   protected
   def permitted_params
-    params.permit(:url, :user_key, :visitor_key, :pageview_key, :page_html, :window_height, :window_width, :timestamp)
+    params.permit(:url, :website_key, :visitor_key, :pageview_key, :page_html, :window_height, :window_width, :timestamp)
   end
 end
