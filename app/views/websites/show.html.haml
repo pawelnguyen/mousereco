@@ -1,0 +1,12 @@
+%h1 Website pageviews
+
+%ul
+- @website.pageviews.each do |pageview|
+  %li
+    = link_to pageview_path(pageview) do
+      url: #{pageview.url}, key: #{pageview.key}
+
+%h2 Tracking code
+%pre
+  :escaped
+    <script src="#{tracker_url(@website.key, format: :js)}"></script>
