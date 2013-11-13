@@ -1,5 +1,6 @@
 require 'spec_helper'
 
 describe Website do
-  pending "add some examples to (or delete) #{__FILE__}"
+  subject { described_class.new }
+  its(:key) { should_not be_blank }
 end
