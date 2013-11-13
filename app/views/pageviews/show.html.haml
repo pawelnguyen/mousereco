@@ -1,6 +1,10 @@
 %h1 Pageview
-url: #{@pageview.url}
-key: #{@pageview.key}
+%ul.list-unstyled
+  %li url: #{@pageview.url}
+  %li key: #{@pageview.key}
+  %li
+    %button.play.btn-primary play
+
 
 #events{ data: {url: page_html_pageview_path(@pageview), window_height: max_if_zero(@pageview.window_height),
   window_width: max_if_zero(@pageview.window_width), key: @pageview.key, events: @pageview.events_json,
