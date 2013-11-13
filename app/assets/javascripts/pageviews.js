@@ -1,3 +1,9 @@
+mouseRecorder = mouseRecorder || {};
+mouseRecorder.modules = mouseRecorder.modules || {};
+mouseRecorder.views = mouseRecorder.views || {};
+
+
+
 (function(namespace) {
 
     var EVENTS = {
@@ -110,7 +116,6 @@
             }
         },
         showEvent: function(event) {
-            console.log(event);
             switch(event.type) {
                 case EVENTS.SCROLL:
                     this.$iframe.scrollTop(event.y);
@@ -124,7 +129,7 @@
     };
 
     namespace.Player = Player;
-})(window);
+})(mouseRecorder.modules);
 
 
 (function(namespace) {
@@ -154,7 +159,7 @@
         init: function() {
             var player;
             this.$iframe.on('load', $.proxy(function() {
-                this.player = player = new window.Player(this.events, this.$iframe.contents().find('body'));
+                this.player = player = new mouseRecorder.modules.Player(this.events, this.$iframe.contents().find('body'));
             }, this));
             $('button.play').on('click', function() {
                 if(player) {
@@ -173,11 +178,11 @@
     };
 
     namespace.Pageviews = Pageviews;
-})(window);
+})(mouseRecorder.views);
 
 
 $(document).on('ready', function() {
     if($('body').hasClass('pageviews')) {
-        var pageviews = new window.Pageviews('#events');
+        var pageviews = new mouseRecorder.views.Pageviews('#events');
     }
 });
