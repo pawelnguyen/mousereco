@@ -5,6 +5,8 @@
   %li
     = link_to pageview_path(pageview) do
       url: #{pageview.url}, key: #{pageview.key}
+- unless @website.pageviews.any?
+  %h4 You have no recordings yet. Install your tracking code to start recording
 
 %h2 Tracking code
 %pre

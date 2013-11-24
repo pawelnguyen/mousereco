@@ -7,4 +7,8 @@ class WebsitesController < InheritedResources::Base
   def permitted_params
     params.permit(website: [:url])
   end
+
+  def collection
+    @websites = end_of_association_chain.where(user: current_user)
+  end
 end
