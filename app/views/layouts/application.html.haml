@@ -13,11 +13,14 @@
           = link_to 'Mouse recorder', root_path, class: 'navbar-brand'
         .collapse.navbar-collapse
           %ul.nav.navbar-nav.navbar-right
-            %li
-              - unless user_signed_in?
-                = link_to 'Sign in', new_user_session_path
-              - else
+            - if user_signed_in?
+              %li
+                %a= current_user.email
+              %li
                 = link_to 'Sign out', destroy_user_session_path
+            - else
+              %li
+                = link_to 'Sign in', new_user_session_path
     .container.main-container
       .row
         .col-md-12
