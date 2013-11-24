@@ -46,6 +46,7 @@ GEM
     diff-lcs (1.2.4)
     erubis (2.7.0)
     execjs (2.0.2)
+    fabrication (2.8.1)
     haml (4.0.3)
       tilt
     has_scope (0.6.0.rc)
@@ -166,6 +167,7 @@ DEPENDENCIES
   cancan
   coffee-rails (~> 4.0.0)
   devise
+  fabrication
   haml
   inherited_resources
   jbuilder (~> 1.2)
