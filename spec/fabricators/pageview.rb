@@ -1,0 +1,2 @@
+Fabricator(:pageview) do
+end

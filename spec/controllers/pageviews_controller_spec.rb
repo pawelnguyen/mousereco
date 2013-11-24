@@ -2,14 +2,14 @@ require 'spec_helper'
 
 describe PageviewsController do
   describe '#show' do
-    let(:website) { Website.create }
-    let(:pageview) { Pageview.create(website: website) }
+    let(:website) { Fabricate(:website) }
+    let(:pageview) { Fabricate(:pageview, website: website) }
     subject { get :show, {id: pageview.id}; response }
 
     its(:status) { should eq 302 }
 
     context 'signed in' do
-      let(:user) { User.create(email: 'test@email.com', password: 'password', password_confirmation: 'password') }
+      let(:user) { Fabricate(:user) }
 
       before do
         sign_in user
@@ -20,7 +20,7 @@ describe PageviewsController do
       end
 
       context 'website belongs to user' do
-        let(:website) { Website.create(user_id: user.id) }
+        let(:website) { Fabricate(:website, user_id: user.id) }
 
         its(:status) { should eq 200 }
       end
