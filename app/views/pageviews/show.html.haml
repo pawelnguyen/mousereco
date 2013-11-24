@@ -3,7 +3,12 @@
   %li url: #{@pageview.url}
   %li key: #{@pageview.key}
   %li
-    %button.play.btn-primary play
+    %div.col-md-1
+      %button.play.btn-info play
+    %div.col-md-5
+      %div.progress.progress-striped.progress-player
+        %div.progress-bar.progress-bar-info{role: 'progressbar'}
+        %div.time
 
 
 #events{ data: {url: page_html_pageview_path(@pageview), window_height: max_if_zero(@pageview.window_height),

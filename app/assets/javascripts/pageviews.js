@@ -11,6 +11,7 @@ mouseRecorder.views = mouseRecorder.views || {};
         SCROLL: 'scroll'
     },
     playDelay = 500,
+    duartionInterval = 100,
     Player = function(events, $iframe){
         this.mouseEvents = [];
         this.scrollEvents = [];
@@ -25,13 +26,27 @@ mouseRecorder.views = mouseRecorder.views || {};
         this.scrollRealTimestamp = 0;
         this.scrollPauseTimeout = 0;
 
+        this.currentPlayPosition = 0;
+
         this.$iframe = $iframe;
         this.$mouse = null;
 
+        this.getDuration(events);
         this.groupEvents(events);
         this.createMouse();
     };
     Player.prototype = {
+        getDuration: function(events) {
+            if(events === undefined) {
+                return this.duration;
+            }
+            else {
+                this.duration = playDelay + (events[events.length - 1].timestamp - events[0].timestamp);
+            }
+        },
+        getPlayPosition: function() {
+            return this.currentPlayPosition;
+        },
         groupEvents: function(events) {
             for(var i in events) {
                 events[i].type = events[i].type.toLowerCase();
@@ -53,14 +68,24 @@ mouseRecorder.views = mouseRecorder.views || {};
             this.paused = false;
             this.playScroll();
             this.playMouse();
+            this.playDuration();
         },
         pause: function() {
             this.paused = true;
             clearTimeout(this.scrollTimeout);
             clearTimeout(this.mouseTimeout);
+            clearInterval(this.durationTicker);
             this.$mouse.stop();
             this.mousePauseTimeout += (new Date()).getTime() - this.mouseRealTimestamp;
             this.scrollPauseTimeout += (new Date()).getTime() - this.scrollRealTimestamp;
+        },
+        playDuration: function() {
+            var self = this,
+                $self = $(this);
+            this.durationTicker = setInterval(function() {
+                self.currentPlayPosition += duartionInterval;
+                $self.trigger('duration.update');
+            }, duartionInterval);
         },
         playMouse: function() {
             if(!this.paused && this.mouseEvents[this.currentMouseEvent]) {
@@ -141,6 +166,7 @@ mouseRecorder.views = mouseRecorder.views || {};
     Pageviews = function(events) {
         this.$events = $(events);
         this.$iframe = this.getIframe();
+        this.$progressbar = $('.progress-bar');
         this.events = this.parseEvents();
         this.init();
 
@@ -156,10 +182,25 @@ mouseRecorder.views = mouseRecorder.views || {};
             $iframe.attr('height', this.$events.attr(HEIGHT));
             return $iframe;
         },
+        formatTime: function() {
+
+        },
+        getTime: function(current, duration) {
+
+            return current + ' / ' + duration;
+        },
         init: function() {
-            var player;
+            var player,
+                self = this;
             this.$iframe.on('load', $.proxy(function() {
                 this.player = player = new mouseRecorder.modules.Player(this.events, this.$iframe.contents().find('body'));
+                var duration = player.getDuration(),
+                    $label = self.$progressbar.next();
+                $label.text(self.getTime(0, duration));
+                $(this.player).on('duration.update', function() {
+                    self.$progressbar.width(Math.round((this.getPlayPosition() / this.getDuration() * 100 * 100))/100 + '%');
+                    $label.text(self.getTime(this.getPlayPosition(), duration));
+                });
             }, this));
             $('button.play').on('click', function() {
                 if(player) {

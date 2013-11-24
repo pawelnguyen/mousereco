@@ -26,3 +26,14 @@
     color: #F00;
     position: absolute;
 }
+
+.progress-player.progress {
+    height: 26px;
+}
+.progress div.time {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    left: 0;
+    top: 0;
+}
