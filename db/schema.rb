@@ -11,7 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131113220449) do
+ActiveRecord::Schema.define(version: 20131208223915) do
+
+  create_table "calculatable_visits", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "events", force: true do |t|
     t.float    "x"
@@ -22,6 +27,8 @@ ActiveRecord::Schema.define(version: 20131113220449) do
     t.integer  "pageview_id"
     t.string   "type"
   end
+
+  add_index "events", ["pageview_id"], name: "index_events_on_pageview_id"
 
   create_table "pageviews", force: true do |t|
     t.string   "url"
@@ -34,7 +41,12 @@ ActiveRecord::Schema.define(version: 20131113220449) do
     t.integer  "window_height", default: 0
     t.integer  "timestamp"
     t.integer  "website_id"
+    t.integer  "visit_id"
   end
+
+  add_index "pageviews", ["visit_id"], name: "index_pageviews_on_visit_id"
+  add_index "pageviews", ["visitor_id"], name: "index_pageviews_on_visitor_id"
+  add_index "pageviews", ["website_id"], name: "index_pageviews_on_website_id"
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -67,5 +79,7 @@ ActiveRecord::Schema.define(version: 20131113220449) do
     t.datetime "updated_at"
     t.string   "key"
   end
+
+  add_index "websites", ["user_id"], name: "index_websites_on_user_id"
 
 end
