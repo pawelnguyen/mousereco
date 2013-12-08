@@ -45,7 +45,7 @@ mouseRecorder.views = mouseRecorder.views || {};
             }
         },
         getPlayPosition: function() {
-            return this.currentPlayPosition;
+            return Math.min(this.currentPlayPosition, this.duration);
         },
         groupEvents: function(events) {
             for(var i in events) {
@@ -85,6 +85,7 @@ mouseRecorder.views = mouseRecorder.views || {};
             this.durationTicker = setInterval(function() {
                 self.currentPlayPosition += duartionInterval;
                 $self.trigger('duration.update');
+                self.end();
             }, duartionInterval);
         },
         playMouse: function() {
@@ -140,6 +141,12 @@ mouseRecorder.views = mouseRecorder.views || {};
                 }, timeout);
             }
         },
+        end: function() {
+            if(this.currentPlayPosition >= this.duration) {
+                this.pause();
+//                @TODO emit finished event
+            }
+        },
         showEvent: function(event) {
             switch(event.type) {
                 case EVENTS.SCROLL:
@@ -182,12 +189,20 @@ mouseRecorder.views = mouseRecorder.views || {};
             $iframe.attr('height', this.$events.attr(HEIGHT));
             return $iframe;
         },
-        formatTime: function() {
+        formatTime: function(timeMs) {
+            var time = timeMs / 100,
+                h = Math.floor(time / (10 * 60 * 60)),
+                m = Math.floor(time / (10 * 60)) % 60,
+                s = Math.floor(time / 10) % 60,
+                ms = Math.floor(time % 10);
 
+            return this.padTime(m) + ':' + this.padTime(s) + ':' + ms;
+        },
+        padTime: function(time) {
+            return time < 10 ? '0' + time : time;
         },
         getTime: function(current, duration) {
-
-            return current + ' / ' + duration;
+            return this.formatTime(current) + ' / ' + this.formatTime(duration);
         },
         init: function() {
             var player,
