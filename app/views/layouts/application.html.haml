@@ -12,6 +12,9 @@
         .navbar-header
           = link_to 'Mouse recorder', root_path, class: 'navbar-brand'
         .collapse.navbar-collapse
+          %ul.nav.navbar-nav
+            %li
+              = link_to 'Your Websites', websites_path
           %ul.nav.navbar-nav.navbar-right
             - if user_signed_in?
               %li
