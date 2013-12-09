@@ -4,4 +4,8 @@ class Visitor < ActiveRecord::Base
   has_many :clicks, through: :pageviews
   has_many :mousemoves, through: :pageviews
   has_many :scrolls, through: :pageviews
+
+  def last_event
+    events.order('timestamp ASC').last
+  end
 end

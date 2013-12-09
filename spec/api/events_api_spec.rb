@@ -4,9 +4,9 @@ describe 'POST /api/v1/events' do
   subject { post "/api/v1/events", data; response }
   let(:data) {
     {"url" => "http://test.com",
-     "website_key" => "4k5n245j625k23nrg",
-     "pageview_key" => "3kjn234jk23n4tk4her",
-     "visitor_key" => "49tuhiarf9q834tn34k3t",
+     "website_key" => pageview.website.key,
+     "pageview_key" => pageview.key,
+     "visitor_key" => pageview.visitor.key,
      "events" =>
        {"0" => {"x" => "123.0", "y" => "321.4", "timestamp" => "123456671"},
         "1" => {"x" => "125.0", "y" => "323.4", "timestamp" => "123456678", "type" => "scroll"},
@@ -16,6 +16,7 @@ describe 'POST /api/v1/events' do
        }
     }
   }
+  let(:pageview) { Fabricate(:pageview) }
 
   its(:status) { should eq 200 }
 

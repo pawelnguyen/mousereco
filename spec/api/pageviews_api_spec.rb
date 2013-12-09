@@ -54,5 +54,30 @@ EOS
       Pageview.last.window_height.should eq 900
       Pageview.last.timestamp.should eq 123456671
     end
+
+    #TODO: move to service test or create needed structure in before, then post
+    context 'two pageviews in a row' do
+      before do
+        post("/api/v1/pageviews", data)
+        post("/api/v1/pageviews", data_2)
+      end
+
+      let(:data_2) {
+        data.merge({"timestamp" => timestamp_2.to_s, "pageview_key" => "4hjbsejhbghsj54bj"})
+      }
+      let(:timestamp_2) { 123456690 }
+
+      context 'with timestamps difference less than 5 minutes' do
+        it 'should create one visit' do
+          Calculatable::Visit.count.should eq 1
+        end
+      end
+
+      context 'with timestamps difference greater than 5 minutes' do
+        let(:timestamp_2) { 123456690 }
+
+
+      end
+    end
   end
 end
