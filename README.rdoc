@@ -1,8 +1,0 @@
-example of script url:
-
-    http://localhost:3000/trackers/4tbjh5btjwhb5t.js
-
-
-test page url:
-
-    http://localhost:3000/test.html

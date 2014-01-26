@@ -1,9 +1,0 @@
-.pull-right
-  = link_to 'Add new website', new_website_path, class: 'btn btn-danger'
-
-%h1 Your Websites
-
-%ul
-- @websites.each do |website|
-  %li
-    = link_to website.url, website_path(website)

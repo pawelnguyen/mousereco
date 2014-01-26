@@ -1,4 +1,4 @@
-MouseRecorder::Application.routes.draw do
+Mousereco::Engine.routes.draw do
   namespace :api do
     namespace :v1 do
       post :events, to: 'events#create'
@@ -11,8 +11,6 @@ MouseRecorder::Application.routes.draw do
     end
   end
 
-  devise_for :users
-
   resources :visitors, only: [:index]
 
   resources :pageviews, only: [:show] do
@@ -21,9 +19,5 @@ MouseRecorder::Application.routes.draw do
     end
   end
 
-  resources :websites
-
-  resources :trackers, only: [:show]
-
-  root 'websites#index'
+  root to: 'pageviews#index'
 end
