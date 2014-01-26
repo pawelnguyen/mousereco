@@ -1,8 +1,3 @@
-example of script url:
+= Mousereco
 
-    http://localhost:3000/trackers/4tbjh5btjwhb5t.js
-
-
-test page url:
-
-    http://localhost:3000/test.html
+Mousereco is a mouse recording Gem with a web interface used to replay user visits
