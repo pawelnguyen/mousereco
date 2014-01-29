@@ -1,6 +1,6 @@
 # Mousereco
 
-Mousereco is a mouse recording Gem with a web interface used to replay user visits
+Mousereco is a mouse recording Rails engine with a web interface used to replay user visits
 
 ## Installation
 
