@@ -1,2 +1,0 @@
-class Scroll < Event
-end

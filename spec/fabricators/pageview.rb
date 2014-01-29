@@ -1,5 +1,3 @@
-Fabricator(:pageview) do
-  website
-  visit
+Fabricator(:pageview, from: Mousereco::Pageview) do
   visitor
 end

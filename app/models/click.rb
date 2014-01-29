@@ -1,2 +1,0 @@
-class Click < Event
-end

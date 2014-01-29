@@ -1,3 +1,0 @@
-= Mousereco
-
-Mousereco is a mouse recording Gem with a web interface used to replay user visits
