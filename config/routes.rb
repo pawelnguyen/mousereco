@@ -19,5 +19,7 @@ Mousereco::Engine.routes.draw do
     end
   end
 
-  root to: 'pageviews#index'
+  resources :trackers, only: [:show]
+
+  root to: 'visitors#index'
 end
