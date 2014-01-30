@@ -1,0 +1,10 @@
+{
+  "name": "my-project-name",
+  "version": "0.1.0",
+  "repository": {},
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-watch": "~0.5.3"
+  }
+}
