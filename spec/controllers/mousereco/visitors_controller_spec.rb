@@ -7,5 +7,6 @@ describe Mousereco::VisitorsController do
     subject { get :index; response }
 
     its(:status) { should eq 200 }
+    it { should be_success }
   end
 end

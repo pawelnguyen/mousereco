@@ -9,6 +9,7 @@ group :test do
   gem 'inherited_resources'
   gem 'fabrication'
   gem 'haml'
+  gem 'jquery-rails'
 end
 
 gemspec
