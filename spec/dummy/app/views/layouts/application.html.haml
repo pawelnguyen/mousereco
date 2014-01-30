@@ -3,18 +3,14 @@
   %head
     %meta{name: "viewport", content: "width=device-width, initial-scale=1.0"}
     %title= "Mouse recorder"
-    = stylesheet_link_tag "mousereco/mousereco"
-    = javascript_include_tag "mousereco/mousereco"
+    = stylesheet_link_tag "application"
+    = javascript_include_tag "application"
     = csrf_meta_tag
   %body{class: controller_name}
     .navbar.navbar-inverse.navbar-fixed-top
       .container
         .navbar-header
-          = link_to 'Mouse recorder', root_path, class: 'navbar-brand'
-        .collapse.navbar-collapse
-          %ul.nav.navbar-nav
-            %li
-              = link_to 'Your Visitors', visitors_path
+          = link_to 'Dummy App', root_path, class: 'navbar-brand'
     .container.main-container
       .row
         .col-md-12

@@ -11,12 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140128221418) do
+ActiveRecord::Schema.define(version: 20140130215835) do
 
   create_table "mousereco_events", force: true do |t|
     t.float    "x"
     t.float    "y"
-    t.integer  "timestamp"
+    t.integer  "timestamp",   limit: 5
     t.integer  "pageview_id"
     t.string   "type"
     t.datetime "created_at"
@@ -32,7 +32,7 @@ ActiveRecord::Schema.define(version: 20140128221418) do
     t.text     "page_html"
     t.integer  "window_width"
     t.integer  "window_height"
-    t.integer  "timestamp"
+    t.integer  "timestamp",     limit: 5
     t.datetime "created_at"
     t.datetime "updated_at"
   end

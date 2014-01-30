@@ -1,5 +1,5 @@
 module Mousereco
-  class TrackersController < ApplicationController
+  class TrackersController < Mousereco::ApplicationController
     def show
     end
   end

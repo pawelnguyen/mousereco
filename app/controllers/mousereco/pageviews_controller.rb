@@ -1,5 +1,5 @@
 module Mousereco
-  class PageviewsController < ApplicationController
+  class PageviewsController < Mousereco::ApplicationController
     inherit_resources
     custom_actions resource: :page_html
 

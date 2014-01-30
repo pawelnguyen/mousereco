@@ -1,5 +1,5 @@
 module Mousereco
-  class VisitorsController < ApplicationController
+  class VisitorsController < Mousereco::ApplicationController
     inherit_resources
   end
 end

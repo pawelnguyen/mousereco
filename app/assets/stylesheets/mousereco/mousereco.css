@@ -8,6 +8,32 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  *
+ *= require mousereco/bootstrap.min
  *= require_self
  *= require_tree .
  */
+
+.main-container {
+    padding-top: 60px;
+}
+
+.pageviews .main-container {
+    margin-left: 0;
+}
+
+.event-mark {
+    z-index: 99998;
+    color: #F00;
+    position: absolute;
+}
+
+.progress-player.progress {
+    height: 26px;
+}
+.progress div.time {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    left: 0;
+    top: 0;
+}
