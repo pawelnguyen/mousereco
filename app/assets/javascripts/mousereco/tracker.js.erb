@@ -83,14 +83,13 @@
      */
     (function(namespace) {
 
-        var eventsPath = '<%= api_v1_events_path %>',
-            htmlPath = '<%= api_v1_pageviews_path %>',
-            host = '<%= "#{request.protocol}#{request.host_with_port}" %>',
+        <% url_helpers = Mousereco::Engine.routes.url_helpers %>
+        var eventsPath = '<%= url_helpers.api_v1_events_path %>',
+            htmlPath = '<%= url_helpers.api_v1_pageviews_path %>',
             cookie = 'MouseRecorder_visitorKey',
             pushTimeout = 2500,
         Pusher = function(){
             this.url = MouseRecorder.Util.getUrl();
-            this.userKey = '<%= params[:id] %>';
             this.visitorKey = this.getVisitorKey();
             this.pageviewKey = MouseRecorder.Util.getUID();
             this.events = [];
@@ -106,7 +105,7 @@
                 data.window_height = window_size.height;
                 data.window_width = window_size.width;
                 data.page_html = MouseRecorder.Util.getHTML();
-                this.push(data, host + htmlPath);
+                this.push(data, htmlPath);
             },
             receive: function(event, type) {
                 var type = type || MouseRecorder.Events.CLICK,
@@ -135,7 +134,7 @@
                 var data = this.basicData();
                 data.events = this.events;
                 this.events = [];
-                this.push(data, host + eventsPath);
+                this.push(data, eventsPath);
             },
             push: function(data, url, callback) {
                 var request = false,
@@ -172,7 +171,6 @@
             basicData: function() {
                 return {
                     url: this.url,
-                    website_key: this.userKey,
                     visitor_key: this.visitorKey,
                     pageview_key: this.pageviewKey,
                     timestamp: (new Date()).getTime()
