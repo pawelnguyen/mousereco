@@ -8,15 +8,22 @@ Add this line to your application's Gemfile:
 
     gem 'mousereco'
 
-And then execute:
+Execute:
 
     $ bundle
 
-Or install it yourself as:
+And then run install generator:
 
-    $ gem install mousereco
+    $ rails generate mousereco:install
+
+It will:
+ - add a tracker js code to your application.js file
+ - mount Mousereco at ```/mousereco``` route
+ - install and run migrations needed for Mousereco
 
 ## Usage
+
+By default Mousereco engine will be mounted at ```/mousereco``` path in your application. You can replay your recordings there
 
 ## Contributing
 
