@@ -16,3 +16,6 @@
 /tmp
 /.idea
 /.idea/*
+
+/db/migrate
+/db/schema.rb
