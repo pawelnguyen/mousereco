@@ -6,7 +6,6 @@ describe Mousereco::VisitorsController do
   describe '#index' do
     subject { get :index; response }
 
-    its(:status) { should eq 200 }
-    it { should be_success }
+    it_behaves_like :http_authenticated
   end
 end

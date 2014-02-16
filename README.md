@@ -4,22 +4,31 @@ Mousereco is a mouse recording Rails engine with a web interface used to replay 
 
 ## Installation
 
-Add this line to your application's Gemfile:
+#### 1. Add this line to your application's Gemfile:
 
     gem 'mousereco'
 
-Execute:
+#### 2. Execute:
 
     $ bundle
 
-And then run install generator:
+#### 3. And then run install generator:
 
     $ rails generate mousereco:install
 
 It will:
+ - add ```initializers/mousereco.rb``` file
  - add a tracker js code to your application.js file
  - mount Mousereco at ```/mousereco``` route
  - install and run migrations needed for Mousereco
+
+#### 4. Change your http basic authentication password:
+
+Edit ```initializers/mousereco.rb``` file:
+
+```
+config.http_auth_password = 'your_secret_password'
+```
 
 ## Usage
 

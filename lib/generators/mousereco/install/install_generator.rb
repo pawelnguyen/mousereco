@@ -1,7 +1,13 @@
 module Mousereco
   module Generators
     class InstallGenerator < Rails::Generators::Base
-      desc "This generator installs Mousereco"
+      source_root File.expand_path('../templates', __FILE__)
+
+      desc 'This generator installs Mousereco'
+
+      def copy_initializer_file
+        copy_file 'mousereco.rb', 'config/initializers/mousereco.rb'
+      end
 
       def add_assets
         js_manifest = 'app/assets/javascripts/application.js'
@@ -14,8 +20,8 @@ module Mousereco
       end
 
       def run_migrations
-        rake "mousereco:install:migrations"
-        rake "db:migrate"
+        rake 'mousereco:install:migrations'
+        rake 'db:migrate'
       end
     end
   end

@@ -7,6 +7,6 @@ describe Mousereco::PageviewsController do
     let(:pageview) { Fabricate(:pageview) }
     subject { get :show, {id: pageview.id}; response }
 
-    its(:status) { should eq 200 }
+    it_behaves_like :http_authenticated
   end
 end
