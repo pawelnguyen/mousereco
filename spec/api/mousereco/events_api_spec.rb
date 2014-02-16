@@ -34,4 +34,15 @@ describe Mousereco::Api::V1::EventsController, type: :controller do
     Mousereco::Pageview.last.events.count.should eq data["events"].count
     Mousereco::Event.count.should eq data["events"].count
   end
+
+  context 'empty events array' do
+    let(:data) {
+      {"url" => "http://test.com",
+       "pageview_key" => pageview.key,
+       "visitor_key" => pageview.visitor.key
+      }
+    }
+
+    it { should be_success}
+  end
 end
