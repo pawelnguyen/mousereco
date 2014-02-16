@@ -6,7 +6,6 @@ group :test do
   #gems used by dummy app
   gem 'sqlite3'
   gem 'rspec-rails'
-  gem 'inherited_resources'
   gem 'fabrication'
   gem 'haml'
   gem 'jquery-rails'

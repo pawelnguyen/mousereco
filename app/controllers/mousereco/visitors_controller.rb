@@ -1,5 +1,7 @@
 module Mousereco
   class VisitorsController < Mousereco::ApplicationController
-    inherit_resources
+    def index
+      @visitors = Visitor.all
+    end
   end
 end

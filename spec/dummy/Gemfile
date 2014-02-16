@@ -26,6 +26,5 @@ group :production do
 end
 
 gem 'haml'
-gem 'inherited_resources'
 gem 'fabrication'
 gem 'mousereco', path: '../../'
