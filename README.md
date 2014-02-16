@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/pawelnguyen/mousereco.png?branch=master)](https://travis-ci.org/pawelnguyen/mousereco)
+
 # Mousereco
 
 Mousereco is a mouse recording Rails engine with a web interface used to replay user visits
