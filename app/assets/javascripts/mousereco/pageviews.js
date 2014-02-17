@@ -1,7 +1,7 @@
 var mouseRecorder = mouseRecorder || {};
 mouseRecorder.modules = mouseRecorder.modules || {};
 mouseRecorder.views = mouseRecorder.views || {};
-
+mouseRecorder.TRACK = false;
 
 
 (function(namespace) {
