@@ -1,4 +1,6 @@
-require "mousereco/engine"
+require 'rails'
+require 'haml'
+require 'mousereco/engine'
 
 module Mousereco
   mattr_accessor :http_auth_user_name
