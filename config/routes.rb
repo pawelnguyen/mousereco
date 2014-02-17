@@ -7,7 +7,6 @@ Mousereco::Engine.routes.draw do
           post :preflight, to: 'pageviews#preflight'
         end
       end
-      match '*all', to: 'application#options', via: [:options]
     end
   end
 

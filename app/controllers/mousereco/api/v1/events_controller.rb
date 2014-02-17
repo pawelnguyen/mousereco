@@ -1,7 +1,7 @@
 module Mousereco
   module Api
     module V1
-      class EventsController < ApplicationController
+      class EventsController < Mousereco::Api::V1::ApplicationController
         def create
           if permitted_params[:events].present?
             EventsService.create_collection(permitted_params[:events].values, permitted_params[:visitor_key], permitted_params[:pageview_key])

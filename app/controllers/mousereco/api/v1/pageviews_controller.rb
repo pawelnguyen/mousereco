@@ -1,7 +1,7 @@
 module Mousereco
   module Api
     module V1
-      class PageviewsController < ApplicationController
+      class PageviewsController < Mousereco::Api::V1::ApplicationController
         def preflight
           render json: {success: true, send_html: true}
         end
