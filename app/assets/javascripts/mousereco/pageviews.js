@@ -9,6 +9,7 @@ mouseRecorder.TRACK = false;
     var EVENTS = {
         MOVE: 'mousemove',
         SCROLL: 'scroll'
+
     },
     playDelay = 500,
     duartionInterval = 100,
