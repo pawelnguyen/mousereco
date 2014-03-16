@@ -4,7 +4,7 @@ module Mousereco
       class EventsController < Mousereco::Api::V1::ApplicationController
         def create
           if permitted_params[:events].present?
-            EventsService.create_collection(permitted_params[:events].values, permitted_params[:visitor_key], permitted_params[:pageview_key])
+            EventsRepository.create_collection(permitted_params[:events].values, permitted_params[:visitor_key], permitted_params[:pageview_key])
           end
           render json: {success: true}
         end

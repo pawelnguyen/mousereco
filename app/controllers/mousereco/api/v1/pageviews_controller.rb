@@ -7,7 +7,7 @@ module Mousereco
         end
 
         def create
-          PageviewsService.create!(permitted_params)
+          PageviewsRepository.create!(permitted_params)
           render json: {success: true}
         end
 

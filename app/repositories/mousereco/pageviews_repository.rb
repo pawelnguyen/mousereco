@@ -1,5 +1,5 @@
 module Mousereco
-  class PageviewsService
+  class PageviewsRepository
     class << self
       def create!(attributes)
         Mousereco::Pageview.transaction do

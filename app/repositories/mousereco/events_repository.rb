@@ -1,5 +1,5 @@
 module Mousereco
-  class EventsService
+  class EventsRepository
     class << self
       def create_collection(events_attributes, visitor_key, pageview_key)
         Mousereco::Event.transaction do
