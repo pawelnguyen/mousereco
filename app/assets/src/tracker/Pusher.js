@@ -28,7 +28,7 @@
         },
         receive: function (event, type) {
             var eventType = type || MouseRecorder.Events.CLICK,
-                push = (eventType == MouseRecorder.Events.CLICK);
+                push = (eventType === MouseRecorder.Events.CLICK);
             this.events.push({
                 x: event.pageX,
                 y: event.pageY,
@@ -83,7 +83,7 @@
                 }
                 request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
                 request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                if (request.readyState != 4) {
+                if (request.readyState !== 4) {
                     request.send(MouseRecorder.Util.toString(data));
                 }
             }

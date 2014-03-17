@@ -21,7 +21,9 @@
                 expires = "; expires=" + date.toUTCString();
             }
             if (type === "object"  && type !== "undefined") {
-                if(!("JSON" in window)) throw "Bummer, your browser doesn't support JSON parsing.";
+                if(!("JSON" in window)) {
+                    throw "Bummer, your browser doesn't support JSON parsing.";
+                }
                 valueToUse = JSON.stringify({v:value});
             } else {
                 valueToUse = encodeURIComponent(value);
@@ -37,15 +39,21 @@
                 parsed={};
             for (var i = 0; i < ca.length; i++) {
                 var c = ca[i];
-                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                while (c.charAt(0) === ' ') {
+                    c = c.substring(1, c.length);
+                }
                 if (c.indexOf(nameEQ) === 0) {
                     value = c.substring(nameEQ.length, c.length);
                     firstChar = value.substring(0, 1);
-                    if(firstChar=="{"){
+                    if(firstChar === "{"){
                         parsed = JSON.parse(value);
-                        if("v" in parsed) return parsed.v;
+                        if("v" in parsed) {
+                            return parsed.v;
+                        }
                     }
-                    if (value=="undefined") return undefined;
+                    if (value === "undefined") {
+                        return undefined;
+                    }
                     return decodeURIComponent(value);
                 }
             }
