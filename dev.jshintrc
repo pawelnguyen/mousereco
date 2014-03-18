@@ -85,7 +85,8 @@
     "maxerr"        : 100,      // Maximum errors before stopping.
     "predef"        : [         // Extra globals.
         "MouseRecorder",
-        "ActiveXObject"
+        "ActiveXObject",
+        "$"
     ],
     "indent"        : 4         // Specify indentation spacing
 }

@@ -85,7 +85,8 @@
     "maxerr"        : 100,      // Maximum errors before stopping.
     "predef"        : [         // Extra globals.
         "ActiveXObject",
-        "module"
+        "module",
+        "$"
     ],
     "indent"        : 4         // Specify indentation spacing
 }

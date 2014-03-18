@@ -7,6 +7,7 @@ module.exports = function(grunt) {
     config.tracker = config.src + 'tracker/';
     config.app = config.src + 'app/';
     config.tmp = config.src + 'tmp/';
+    config.dist = 'app/assets/javascripts/mousereco/';
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -44,9 +45,10 @@ module.exports = function(grunt) {
                 src: [
                     config.src + 'intro.js',
                     config.tmp + '*.js',
+                    config.tmp + 'run.js',
                     config.src + 'outro.js'
                 ],
-                dest: 'built.js'
+                dest: config.dist + 'pageviews.js'
             },
             tracker: {
                 src: [
@@ -55,7 +57,7 @@ module.exports = function(grunt) {
                     config.tmp + 'run.js',
                     config.src + 'outro.js'
                 ],
-                dest: 'tracker.js'
+                dest: config.dist + 'tracker.js.erb'
             }
         },
         jshint: {
@@ -73,7 +75,11 @@ module.exports = function(grunt) {
             },
             afterconcat: {
                 files: {
-                    src: ['built.js', 'tracker.js', 'Gruntfile.js']
+                    src: [
+                        config.dist + 'dist.js',
+                        config.dist + 'tracker.js',
+                        'Gruntfile.js'
+                    ]
                 },
                 options: {
                     jshintrc: true
@@ -83,8 +89,16 @@ module.exports = function(grunt) {
         clean: [config.tmp],
         watch: {
             scripts: {
-                files: ['**/*.js'],
-                tasks: ['concat'],
+                files: [
+                    'Gruntfile.js',
+                    'dev.jshintrc',
+                    '.jshintrc',
+                    config.common + '**/*.js',
+                    config.app + '**/*.js',
+                    config.tracker + '**/*.js',
+                    config.src + '*ro.js'
+                ],
+                tasks: ['build'],
                 options: {
                     spawn: false
                 }
@@ -106,6 +120,7 @@ module.exports = function(grunt) {
         'clean',
         'indent:dist',
         'concat:dist',
-        'jshint:afterconcat'
+        'jshint:afterconcat',
+        'clean'
     ]);
 };
