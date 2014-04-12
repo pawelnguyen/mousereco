@@ -1,0 +1,12 @@
+#mouse {
+    opacity: 0.4;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    border-radius: 100;
+    top: 0px;
+    left: 0px;
+    background-color: yellow;
+    font-size: 10px;
+    z-index: 99999;
+}
