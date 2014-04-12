@@ -45,7 +45,7 @@
             var player,
                 self = this;
             this.$iframe.on('load', $.proxy(function() {
-                this.player = player = new namespace.Player(this.events, this.$iframe.contents().find('body'));
+                this.player = player = new namespace.Player(this.events, this.$iframe.contents().find('body'), self.$iframe.data('style'));
                 var duration = player.getDuration(),
                     $label = self.$progressbar.next();
                 $label.text(self.getTime(0, duration));

@@ -5,7 +5,7 @@
 
     var playDelay = 500,
         duartionInterval = 100,
-    Player = function(events, $iframe){
+    Player = function(events, $iframe, css){
         this.mouseEvents = [];
         this.scrollEvents = [];
         this.currentMouseEvent = 0;
@@ -23,7 +23,7 @@
 
         this.$iframe = $iframe;
         this.$mouse = null;
-        this.$iframe.prev().append('<link rel="stylesheet" href="/player.css" type="text/css" />');
+        this.$iframe.prev().append('<link rel="stylesheet" href="' + css + '" type="text/css" />');
 
         this.getDuration(events);
         this.groupEvents(events);
@@ -54,7 +54,7 @@
         },
         createMouse: function() {
             if(!this.$mouse) {
-                this.$iframe.append('<div id="mouse" style="opacity:0.4;width:100px;height:100px;position:absolute;border-radius:100;top:' + 0 + 'px;left:' + 0 + 'px;background-color:yellow;font-size:10px;z-index:99999;"></div>');
+                this.$iframe.append('<div id="mouse"><div class="bg"></div><div class="cursor"></div></div>');
                 this.$mouse = this.$iframe.find('#mouse');
             }
         },
