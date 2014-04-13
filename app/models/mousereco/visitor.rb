@@ -9,5 +9,9 @@ module Mousereco
     def last_event
       events.order('timestamp ASC').last
     end
+
+    def visits
+      Mousereco::PageviewCombiner.combine(pageviews)
+    end
   end
 end

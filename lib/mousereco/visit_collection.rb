@@ -2,7 +2,7 @@ module Mousereco
   class VisitCollection
     attr_reader :visitors
 
-    def initialize(visitors = Visitor.all)
+    def initialize(visitors = Mousereco::Visitor.all)
       @visitors = visitors
     end
 
