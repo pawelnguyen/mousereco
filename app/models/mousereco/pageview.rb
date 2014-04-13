@@ -11,5 +11,9 @@ module Mousereco
     def events_json
       events.to_json(only: [:x, :y, :timestamp, :type])
     end
+
+    def combinable?(pageview)
+
+    end
   end
 end
