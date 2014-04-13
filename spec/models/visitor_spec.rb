@@ -12,7 +12,7 @@ describe Mousereco::Visitor do
     let(:visits) { [double] }
 
     before do
-      Mousereco::PageviewCombiner.should_receive(:new).and_return(pageview_combiner)
+      Mousereco::PageviewsCombiner.should_receive(:new).and_return(pageview_combiner)
       pageview_combiner.should_receive(:combine).and_return(visits)
     end
 

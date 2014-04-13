@@ -11,7 +11,7 @@ module Mousereco
     end
 
     def visits
-      Mousereco::PageviewCombiner.combine(pageviews)
+      Mousereco::PageviewsCombiner.combine(pageviews)
     end
   end
 end
