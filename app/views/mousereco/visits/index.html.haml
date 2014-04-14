@@ -2,7 +2,7 @@
 
 - @visits.each do |visit|
   Visit pageviews:
-  %ul
+  %ul.visit-container
     - visit.pageviews.each do |pageview|
       %li
         = link_to pageview_path(pageview) do
