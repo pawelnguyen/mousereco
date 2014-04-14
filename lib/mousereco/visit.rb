@@ -1,5 +1,7 @@
 module Mousereco
   class Visit
+    include Comparable
+
     attr_reader :pageviews
     def initialize(pageviews = [])
       @pageviews = pageviews
@@ -11,6 +13,10 @@ module Mousereco
 
     def start_timestamp
       pageviews.first.start_timestamp if pageviews.first
+    end
+
+    def <=> other
+      start_timestamp.to_i <=> other.start_timestamp.to_i
     end
   end
 end

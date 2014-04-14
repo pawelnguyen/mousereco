@@ -15,16 +15,14 @@ describe Mousereco::VisitCollection do
   describe '#visits' do
     subject { instance.visits }
     let(:instance) { described_class.new }
-    let(:visitors) { [visitor] }
-    let(:visitor) { double }
-    let(:visits) { [visit_1, visit_2, visit_3] }
-    let(:visit_1) { double(created_at: Time.current - 2.days) }
-    let(:visit_2) { double(created_at: Time.current - 1.days) }
-    let(:visit_3) { double(created_at: Time.current - 3.days) }
+    let(:visitors) { [double] }
     let(:sorted_visits) { [visit_2, visit_1, visit_3] }
+    let(:visit_1) { double }
+    let(:visit_2) { double }
+    let(:visit_3) { double }
 
     before do
-      visitor.should_receive(:visits).and_return visits
+      visitors.stub_chain(:map, :flatten, :sort, :reverse).and_return(sorted_visits)
     end
 
     it { should_not be_nil }

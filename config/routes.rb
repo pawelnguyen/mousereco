@@ -11,6 +11,7 @@ Mousereco::Engine.routes.draw do
   end
 
   resources :visitors, only: [:index]
+  resources :visits, only: [:index]
 
   resources :pageviews, only: [:show] do
     member do

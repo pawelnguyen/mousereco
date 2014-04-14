@@ -7,13 +7,7 @@ module Mousereco
     end
 
     def visits
-      @visits ||= sort(visitors.map(&:visits).flatten)
-    end
-
-    private
-
-    def sort(visits, field = :created_at)
-      visits.sort { |x,y| y.send(field) <=> x.send(field) }
+      @visits ||= visitors.map(&:visits).flatten.sort.reverse
     end
   end
 end
