@@ -1,3 +1,9 @@
 %h1 Visits
 
-= @visits.inspect
+- @visits.each do |visit|
+  Visit pageviews:
+  %ul
+    - visit.pageviews.each do |pageview|
+      %li
+        = link_to pageview_path(pageview) do
+          url: #{pageview.url}, key: #{pageview.key}

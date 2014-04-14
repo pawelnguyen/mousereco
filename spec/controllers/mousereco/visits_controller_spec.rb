@@ -16,12 +16,12 @@ describe Mousereco::VisitsController do
       it { should be_success }
 
       context 'visits in database' do
-        let!(:visitor) { Fabricate(:visitor, pageviews: pageviews) }
-        let(:pageviews) { [pageview_1, pageview_2] }
-        let(:pageview_1) { Fabricate(:pageview) }
-        let(:pageview_2) { Fabricate(:pageview) }
-        let(:events_1) { [event_1, event_2] }
-        let(:events_2) { [event_3, event_4] }
+        let(:visitor) { Fabricate(:visitor) }
+        let!(:pageviews) { [pageview_1, pageview_2] }
+        let(:pageview_1) { Fabricate(:pageview, visitor: visitor) }
+        let(:pageview_2) { Fabricate(:pageview, visitor: visitor) }
+        let!(:events_1) { [event_1, event_2] }
+        let!(:events_2) { [event_3, event_4] }
         let(:event_1) { Fabricate(:event, timestamp: 123456, pageview: pageview_1) }
         let(:event_2) { Fabricate(:event, timestamp: 123466, pageview: pageview_1) }
         let(:event_3) { Fabricate(:event, timestamp: 123476, pageview: pageview_2) }
