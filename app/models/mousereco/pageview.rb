@@ -20,7 +20,7 @@ module Mousereco
     end
 
     def start_timestamp
-      first_event.timestamp unless first_event.nil?
+      timestamp
     end
 
     def end_timestamp
@@ -28,10 +28,6 @@ module Mousereco
     end
 
     private
-    def first_event
-      events.try(:first)
-    end
-
     def last_event
       events.try(:last)
     end

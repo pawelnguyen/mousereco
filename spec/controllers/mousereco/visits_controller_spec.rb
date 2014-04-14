@@ -18,8 +18,8 @@ describe Mousereco::VisitsController do
       context 'visits in database' do
         let(:visitor) { Fabricate(:visitor) }
         let!(:pageviews) { [pageview_1, pageview_2] }
-        let(:pageview_1) { Fabricate(:pageview, visitor: visitor) }
-        let(:pageview_2) { Fabricate(:pageview, visitor: visitor) }
+        let(:pageview_1) { Fabricate(:pageview, visitor: visitor, timestamp: 122990) }
+        let(:pageview_2) { Fabricate(:pageview, visitor: visitor, timestamp: 123440) }
         let!(:events_1) { [event_1, event_2] }
         let!(:events_2) { [event_3, event_4] }
         let(:event_1) { Fabricate(:event, timestamp: 123000, pageview: pageview_1) }

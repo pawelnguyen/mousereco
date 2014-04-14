@@ -54,18 +54,9 @@ describe Mousereco::Pageview do
   end
 
   describe '#start_timestamp' do
-    subject { pageview.start_timestamp }
-
-    before do
-      pageview.stub(:events) { events }
-    end
+    subject { described_class.new(timestamp: 123456).start_timestamp }
 
     it { should eq 123456 }
-
-    context 'empty events' do
-      let(:events) { [] }
-      it { should be_nil }
-    end
   end
 
   describe '#end_timestamp' do
