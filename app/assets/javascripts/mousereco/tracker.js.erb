@@ -1,17 +1,199 @@
-(function(){
+(function(module) {
+    'use strict';
     var MouseRecorder = {};
 
+    /**
+     * MouseRecorder.CookieMonster
+     */
+    (function(namespace){
+        /*!
+         * cookie-monster - a simple cookie library
+         * v0.2.0
+         * https://github.com/jgallen23/cookie-monster
+         * copyright Greg Allen 2013
+         * MIT License
+         */
+        var monster = {
+            set: function(name, value, seconds, path) {
+                var date = new Date(),
+                    expires = '',
+                    type = typeof(value),
+                    valueToUse = '';
+                path = path || "/";
+                if (seconds) {
+                    date.setTime(date.getTime() + seconds * 1000);
+                    expires = "; expires=" + date.toUTCString();
+                }
+                if (type === "object"  && type !== "undefined") {
+                    if(!("JSON" in window)) {
+                        throw "Bummer, your browser doesn't support JSON parsing.";
+                    }
+                    valueToUse = JSON.stringify({v:value});
+                } else {
+                    valueToUse = encodeURIComponent(value);
+                }
+
+                document.cookie = name + "=" + valueToUse + expires + "; path=" + path;
+            },
+            get: function(name) {
+                var nameEQ = name + "=",
+                    ca = document.cookie.split(';'),
+                    value = '',
+                    firstChar = '',
+                    parsed={};
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) === ' ') {
+                        c = c.substring(1, c.length);
+                    }
+                    if (c.indexOf(nameEQ) === 0) {
+                        value = c.substring(nameEQ.length, c.length);
+                        firstChar = value.substring(0, 1);
+                        if(firstChar === "{"){
+                            parsed = JSON.parse(value);
+                            if("v" in parsed) {
+                                return parsed.v;
+                            }
+                        }
+                        if (value === "undefined") {
+                            return undefined;
+                        }
+                        return decodeURIComponent(value);
+                    }
+                }
+                return null;
+            },
+            remove: function(name) {
+                this.set(name, "", -1);
+            }
+        };
+
+        namespace.CookieMonster = monster;
+    })(MouseRecorder);
 
     /**
      * MouseRecorder.Events
      */
-    MouseRecorder.Events = {
-        CLICK: 'click',
-        MOVE: 'mousemove',
-        SCROLL: 'scroll',
-        OVER: 'mouseover'
-    },
+    (function(namespace) {
 
+        namespace.Events = {
+            CLICK: 'click',
+            MOVE: 'mousemove',
+            SCROLL: 'scroll',
+            OVER: 'mouseover'
+        };
+    })(MouseRecorder);
+
+    /**
+     * MouseRecorder.Pusher
+     */
+    (function (namespace) {
+
+        var eventsPath = '<%= Mousereco::Engine.routes.url_helpers.api_v1_events_path %>',
+            htmlPath = '<%= Mousereco::Engine.routes.url_helpers.api_v1_pageviews_path %>',
+            cookie = 'MouseRecorder_visitorKey',
+            pushTimeout = 2500,
+            Pusher = function () {
+                this.url = MouseRecorder.Util.getUrl();
+                this.visitorKey = this.getVisitorKey();
+                this.pageviewKey = MouseRecorder.Util.getUID();
+                this.events = [];
+                this.pushTimer = undefined;
+            };
+        Pusher.prototype = {
+            preflight: function () {
+                //@TODO this.push(this.basicData(), preflightUrl);
+            },
+            html: function () {
+                var data = this.basicData();
+                var window_size = MouseRecorder.Util.getWindowSize();
+                data.window_height = window_size.height;
+                data.window_width = window_size.width;
+                data.page_html = MouseRecorder.Util.getHTML();
+                this.push(data, htmlPath);
+            },
+            receive: function (event, type) {
+                var eventType = type || MouseRecorder.Events.CLICK,
+                    push = (eventType === MouseRecorder.Events.CLICK);
+                this.events.push({
+                    x: event.pageX,
+                    y: event.pageY,
+                    timestamp: (new Date()).getTime(),
+                    type: eventType
+                });
+                if (push) {
+                    this.prePush();
+                }
+                else {
+                    var self = this;
+                    if (!this.pushTimer) {
+                        this.pushTimer = setTimeout(function () {
+                            clearTimeout(self.pushTimer);
+                            self.pushTimer = undefined;
+                            self.prePush();
+                        }, pushTimeout);
+                    }
+                }
+            },
+            prePush: function () {
+                var data = this.basicData();
+                data.events = this.events;
+                this.events = [];
+                this.push(data, eventsPath);
+            },
+            push: function (data, url, callback) {
+                var request = false,
+                    self = this;
+                if (window.ActiveXObject) {
+                    var types = ['MSXML2.XmlHttp.5.0', 'MSXML2.XmlHttp.4.0', 'MSXML2.XmlHttp.3.0', 'MSXML2.XmlHttp.2.0', 'Microsoft.XmlHttp'];
+                    for (var i in types) {
+                        try {
+                            request = new ActiveXObject(types[i]);
+                            break;
+                        } catch (e) {
+                        }
+                    }
+                }
+                else if (window.XMLHttpRequest) {
+                    request = new XMLHttpRequest();
+                }
+
+                if (request) {
+                    request.open('POST', url, true);
+                    if (callback) {
+                        request.onreadystatechange = function () {
+                            if (this.status === 200 && this.readyState === 4) {
+                                callback.apply(self, JSON.parse(this.responseText));
+                            }
+                        };
+                    }
+                    request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                    request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                    if (request.readyState !== 4) {
+                        request.send(MouseRecorder.Util.toString(data));
+                    }
+                }
+            },
+            basicData: function () {
+                return {
+                    url: this.url,
+                    visitor_key: this.visitorKey,
+                    pageview_key: this.pageviewKey,
+                    timestamp: (new Date()).getTime()
+                };
+            },
+            getVisitorKey: function () {
+                var visitorKeyCookie = MouseRecorder.CookieMonster.get(cookie);
+                if (visitorKeyCookie === null || visitorKeyCookie === undefined || visitorKeyCookie.length === 0) {
+                    visitorKeyCookie = MouseRecorder.Util.getUID();
+                }
+                MouseRecorder.CookieMonster.set(cookie, visitorKeyCookie, 60 * 60, '/');
+                return visitorKeyCookie;
+            }
+        };
+
+        namespace.Pusher = Pusher;
+    })(MouseRecorder);
 
     /**
      * MouseRecorder.Tracker
@@ -23,17 +205,17 @@
             mouseScrollTrackInterval = 100,
             mouseOverTrackInterval = 250,
             body = document.getElementsByTagName('body')[0],
-        Tracker = function() {
-            this.pusher = new MouseRecorder.Pusher();
-            this.pusher.html();
+            Tracker = function() {
+                this.pusher = new MouseRecorder.Pusher();
+                this.pusher.html();
 
-            this.coords = {};
-            this.initListeners();
-        };
+                this.coords = {};
+                this.initListeners();
+            };
         Tracker.prototype = {
             on: {},
             initListeners: function() {
-                MouseRecorder.Util.addEventListener(window, MouseRecorder.Events.OVER, this.withInterval(MouseRecorder.Events.OVER, mouseOverTrackInterval, MouseRecorder.Events.MOVE), this)
+                MouseRecorder.Util.addEventListener(window, MouseRecorder.Events.OVER, this.withInterval(MouseRecorder.Events.OVER, mouseOverTrackInterval, MouseRecorder.Events.MOVE), this);
                 MouseRecorder.Util.addEventListener(window, MouseRecorder.Events.SCROLL, this.withInterval(MouseRecorder.Events.SCROLL, mouseScrollTrackInterval), this);
                 MouseRecorder.Util.addEventListener(document, MouseRecorder.Events.MOVE, this.withInterval(MouseRecorder.Events.MOVE, mousePositionTrackInterval), this);
                 MouseRecorder.Util.addEventListener(document, MouseRecorder.Events.CLICK, this.pusher.receive, this.pusher);
@@ -65,7 +247,7 @@
         };
         Tracker.prototype.on[MouseRecorder.Events.OVER] = function(event) {
             return [event.pageX, event.pageY];
-        }
+        };
 
         namespace.Tracker = {
             instance: function() {
@@ -77,119 +259,6 @@
         };
     })(MouseRecorder);
 
-
-    /**
-     * MouseRecorder.Pusher
-     */
-    (function(namespace) {
-
-        <% url_helpers = Mousereco::Engine.routes.url_helpers %>
-        var eventsPath = '<%= url_helpers.api_v1_events_path %>',
-            htmlPath = '<%= url_helpers.api_v1_pageviews_path %>',
-            cookie = 'MouseRecorder_visitorKey',
-            pushTimeout = 2500,
-        Pusher = function(){
-            this.url = MouseRecorder.Util.getUrl();
-            this.visitorKey = this.getVisitorKey();
-            this.pageviewKey = MouseRecorder.Util.getUID();
-            this.events = [];
-            this.pushTimer = undefined;
-        };
-        Pusher.prototype = {
-            preflight: function() {
-//                @TODO this.push(this.basicData(), preflightUrl);
-            },
-            html: function() {
-                var data = this.basicData();
-                var window_size = MouseRecorder.Util.getWindowSize();
-                data.window_height = window_size.height;
-                data.window_width = window_size.width;
-                data.page_html = MouseRecorder.Util.getHTML();
-                this.push(data, htmlPath);
-            },
-            receive: function(event, type) {
-                var type = type || MouseRecorder.Events.CLICK,
-                    push = (type == MouseRecorder.Events.CLICK);
-                this.events.push({
-                    x: event.pageX,
-                    y: event.pageY,
-                    timestamp: (new Date()).getTime(),
-                    type: type
-                });
-                if(push) {
-                    this.prePush();
-                }
-                else {
-                    var self = this;
-                    if(!this.pushTimer) {
-                        this.pushTimer = setTimeout(function() {
-                            clearTimeout(self.pushTimer);
-                            self.pushTimer = undefined;
-                            self.prePush();
-                        }, pushTimeout);
-                    }
-                }
-            },
-            prePush: function() {
-                var data = this.basicData();
-                data.events = this.events;
-                this.events = [];
-                this.push(data, eventsPath);
-            },
-            push: function(data, url, callback) {
-                var request = false,
-                    self = this;
-                if (window.ActiveXObject) {
-                    var types = ['MSXML2.XmlHttp.5.0', 'MSXML2.XmlHttp.4.0', 'MSXML2.XmlHttp.3.0', 'MSXML2.XmlHttp.2.0', 'Microsoft.XmlHttp'];
-                    for(var i in types) {
-                        try {
-                            request = new ActiveXObject(types[i]);
-                            break;
-                        } catch(e){}
-                    }
-                }
-                else if (window.XMLHttpRequest) {
-                    request = new XMLHttpRequest();
-                }
-
-                if(request) {
-                    request.open('POST', url, true);
-                    if(callback) {
-                        request.onreadystatechange = function() {
-                            if(this.status === 200 && this.readyState === 4) {
-                                callback.apply(self, JSON.parse(this.responseText));
-                            }
-                        };
-                    }
-                    request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                    request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                    if(request.readyState != 4) {
-                        request.send(MouseRecorder.Util.toString(data));
-                    }
-                }
-            },
-            basicData: function() {
-                return {
-                    url: this.url,
-                    visitor_key: this.visitorKey,
-                    pageview_key: this.pageviewKey,
-                    timestamp: (new Date()).getTime()
-                };
-            },
-            getVisitorKey: function() {
-                var visitorKeyCookie = MouseRecorder.CookieMonster.get(cookie);
-                if(visitorKeyCookie === null || visitorKeyCookie === undefined || visitorKeyCookie.length === 0) {
-                    visitorKeyCookie = MouseRecorder.Util.getUID();
-                }
-                MouseRecorder.CookieMonster.set(cookie, visitorKeyCookie, 60 * 60, '/')
-                return visitorKeyCookie;
-            }
-        };
-
-        namespace.Pusher = Pusher;
-    })(MouseRecorder);
-
-
     /**
      * MouseRecorder.Util
      */
@@ -199,10 +268,10 @@
                 var _callback = function() {
                     callback.apply(scope, arguments);
                 };
-                if(el.addEventListener != undefined) {
+                if(el.addEventListener !== undefined) {
                     el.addEventListener(event, _callback, false);
                 }
-                else if(el.attachEvent != undefined) {
+                else if(el.attachEvent !== undefined) {
                     el.attachEvent('on' + event, _callback);
                 }
                 else {
@@ -218,7 +287,7 @@
             toString: function(obj, index) {
                 var params = [];
                 for(var i in obj) {
-                    var key = (index == undefined) ? i : index + '[' + i + ']';
+                    var key = (index === undefined) ? i : index + '[' + i + ']';
                     if(Array.isArray(obj[i])) {
                         params.push(this.toString(obj[i], key));
                     }
@@ -234,10 +303,10 @@
             getHTML: function() {
                 var html = document.documentElement.outerHTML.replace(/\s+/g, ' ').replace(/\r?\n|\r/g, ' ').replace(
                     /<head>(.*)<\/head>/, '<base href="' + this.getUrlRoot() + '">' + document.getElementsByTagName('head')[0].innerHTML);
-                return encodeURIComponent(html.replace(/\s+/g, ' ').replace(/\r?\n|\r/g, ' '))
+                return encodeURIComponent(html.replace(/\s+/g, ' ').replace(/\r?\n|\r/g, ' '));
             },
             getUrlRoot: function() {
-              return this.getUrl().match(/(.*\/)/)[0];
+                return this.getUrl().match(/(.*\/)/)[0];
             },
             getWindowSize: function() {
                 return {width: window.innerWidth, height: window.innerHeight};
@@ -245,72 +314,10 @@
         };
     })(MouseRecorder);
 
-
-    /**
-     * MouseRecorder.CookieMonster
-     */
-    (function(namespace){
-        /*!
-         * cookie-monster - a simple cookie library
-         * v0.2.0
-         * https://github.com/jgallen23/cookie-monster
-         * copyright Greg Allen 2013
-         * MIT License
-         */
-        var monster = {
-            set: function(name, value, seconds, path) {
-                var date = new Date(),
-                        expires = '',
-                        type = typeof(value),
-                        valueToUse = '';
-                path = path || "/";
-                if (seconds) {
-                    date.setTime(date.getTime() + seconds * 1000);
-                    expires = "; expires=" + date.toUTCString();
-                }
-                if (type === "object"  && type !== "undefined") {
-                    if(!("JSON" in window)) throw "Bummer, your browser doesn't support JSON parsing.";
-                    valueToUse = JSON.stringify({v:value});
-                } else {
-                    valueToUse = encodeURIComponent(value);
-                }
-
-                document.cookie = name + "=" + valueToUse + expires + "; path=" + path;
-            },
-            get: function(name) {
-                var nameEQ = name + "=",
-                        ca = document.cookie.split(';'),
-                        value = '',
-                        firstChar = '',
-                        parsed={};
-                for (var i = 0; i < ca.length; i++) {
-                    var c = ca[i];
-                    while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-                    if (c.indexOf(nameEQ) === 0) {
-                        value = c.substring(nameEQ.length, c.length);
-                        firstChar = value.substring(0, 1);
-                        if(firstChar=="{"){
-                            parsed = JSON.parse(value);
-                            if("v" in parsed) return parsed.v;
-                        }
-                        if (value=="undefined") return undefined;
-                        return decodeURIComponent(value);
-                    }
-                }
-                return null;
-            },
-            remove: function(name) {
-                this.set(name, "", -1);
-            }
-        };
-
-        namespace.CookieMonster = monster;
-    })(MouseRecorder);
-
     window.onload = function() {
         if(!(window.parent && window.parent.mouseRecorder && window.parent.mouseRecorder.TRACK === false)) {
             MouseRecorder.Tracker.instance();
         }
-    }
+    };
 
-})();
+})(window);
