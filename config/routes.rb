@@ -10,7 +10,6 @@ Mousereco::Engine.routes.draw do
     end
   end
 
-  resources :visitors, only: [:index]
   resources :visits, only: [:index]
 
   resources :pageviews, only: [:show] do
@@ -21,5 +20,5 @@ Mousereco::Engine.routes.draw do
 
   resources :trackers, only: [:show]
 
-  root to: 'visitors#index'
+  root to: 'visits#index'
 end
