@@ -13,6 +13,6 @@
 
 #events{ data: {url: page_html_pageview_path(@pageview), window_height: max_if_zero(@pageview.window_height),
   window_width: max_if_zero(@pageview.window_width), key: @pageview.key, events: @pageview.events_json,
-  visit_start_timestamp: @pageview.timestamp} }
+  visit_start_timestamp: @pageview.timestamp, next_pageview_path: next_pageview_path(@pageview)} }
 
 %iframe#pageview_window{'data-style' => stylesheet_path('mousereco/player')}

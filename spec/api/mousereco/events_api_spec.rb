@@ -7,7 +7,7 @@ describe Mousereco::Api::V1::EventsController, type: :controller do
   let(:data) {
     {"url" => "http://test.com",
      "pageview_key" => pageview.key,
-     "visitor_key" => pageview.visitor.key,
+     "visitor_key" => pageview.visit.visitor.key,
      "events" =>
        {"0" => {"x" => "123.0", "y" => "321.4", "timestamp" => "123456671"},
         "1" => {"x" => "125.0", "y" => "323.4", "timestamp" => "123456678", "type" => "scroll"},
@@ -17,21 +17,18 @@ describe Mousereco::Api::V1::EventsController, type: :controller do
        }
     }
   }
-  let(:pageview) { Fabricate(:pageview) }
+  let(:pageview) { Fabricate(:pageview_with_visit) }
 
   its(:status) { should eq 200 }
 
   it 'saves events' do
     subject
-    Mousereco::Visitor.count.should eq 1
     Mousereco::Pageview.count.should eq 1
-    visitor = Mousereco::Visitor.last
-    visitor.clicks.count.should eq 2
-    visitor.mousemoves.count.should eq 1
-    visitor.pageviews.count.should eq 1
-    visitor.scrolls.count.should eq 2
-    visitor.events.count.should eq data["events"].count
-    Mousereco::Pageview.last.events.count.should eq data["events"].count
+    pageview = Mousereco::Pageview.last
+    pageview.clicks.count.should eq 2
+    pageview.mousemoves.count.should eq 1
+    pageview.scrolls.count.should eq 2
+    pageview.events.count.should eq data["events"].count
     Mousereco::Event.count.should eq data["events"].count
   end
 

@@ -16,20 +16,18 @@ describe Mousereco::VisitsController do
       it { should be_success }
 
       context 'visits in database' do
-        let(:visitor) { Fabricate(:visitor) }
-        let!(:pageviews) { [pageview_1, pageview_2] }
-        let(:pageview_1) { Fabricate(:pageview, visitor: visitor, timestamp: 122990) }
-        let(:pageview_2) { Fabricate(:pageview, visitor: visitor, timestamp: 123440) }
-        let!(:events_1) { [event_1, event_2] }
-        let!(:events_2) { [event_3, event_4] }
-        let(:event_1) { Fabricate(:event, timestamp: 123000, pageview: pageview_1) }
-        let(:event_2) { Fabricate(:event, timestamp: 123200, pageview: pageview_1) }
-        let(:event_3) { Fabricate(:event, timestamp: 123450, pageview: pageview_2) }
-        let(:event_4) { Fabricate(:event, timestamp: 123600, pageview: pageview_2) }
+        let(:visit_1) { Fabricate(:visit) }
+        let(:visit_2) { Fabricate(:visit) }
+        let!(:pageviews) { [pageview_1, pageview_2, pageview_3, pageview_4] }
+        let(:pageview_1) { Fabricate(:pageview, visit: visit_1) }
+        let(:pageview_2) { Fabricate(:pageview, visit: visit_1) }
+        let(:pageview_3) { Fabricate(:pageview, visit: visit_2) }
+        let(:pageview_4) { Fabricate(:pageview, visit: visit_2) }
 
         it { should be_success }
         it 'should render proper amount of visits' do
-          subject.body.scan(/visit-container/).length.should eq 1
+          subject.body.scan(/visit-container/).length.should eq 2
+          subject.body.scan(/\/mousereco\/pageviews\//).length.should eq 4
         end
       end
     end

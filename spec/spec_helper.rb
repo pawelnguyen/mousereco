@@ -2,6 +2,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../dummy/config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
+require 'fabrication'
 
 Dir[File.dirname(__FILE__) + '/support/*.rb'].each { |f| require f }
 
@@ -13,6 +14,7 @@ end
 
 RSpec.configure do |config|
   config.include AuthHelper
+  config.include TimeHelper
 
   config.use_transactional_fixtures = true
 

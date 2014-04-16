@@ -1,9 +1,7 @@
 require 'rails'
 require 'haml'
+require 'jquery-rails'
 require 'mousereco/engine'
-require 'mousereco/visit_collection'
-require 'mousereco/pageviews_combiner'
-require 'mousereco/visit'
 
 module Mousereco
   mattr_accessor :http_auth_user_name
